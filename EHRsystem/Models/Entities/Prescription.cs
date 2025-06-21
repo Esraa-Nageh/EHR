@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations; // Add this if not already present
+using System.ComponentModel.DataAnnotations;
 
 namespace EHRsystem.Models.Entities
 {
@@ -6,19 +6,23 @@ namespace EHRsystem.Models.Entities
     {
         public int Id { get; set; }
         public int PatientId { get; set; }
-        public Patient? Patient { get; set; } // <<-- CHANGED THIS LINE (made nullable)
+        public Patient? Patient { get; set; }
         public int DoctorId { get; set; }
-        public Doctor? Doctor { get; set; } // <<-- CHANGED THIS LINE (made nullable)
-        
-        [Required] // Add Required attribute for validation if not already present
-        public required string MedicationName { get; set; } // <<-- CHANGED THIS LINE
+        public Doctor? Doctor { get; set; }
+
         [Required]
-        public required string Dosage { get; set; } // <<-- CHANGED THIS LINE
+        public required string MedicationName { get; set; }
         [Required]
-        public required string Frequency { get; set; } // <<-- CHANGED THIS LINE
-        
+        public required string Dosage { get; set; }
+        [Required]
+        public required string Frequency { get; set; }
+
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+
+        // NEW: Added PrescriptionDate
+        public DateTime PrescriptionDate { get; set; }
+
         public bool IsActive { get; set; }
     }
 }

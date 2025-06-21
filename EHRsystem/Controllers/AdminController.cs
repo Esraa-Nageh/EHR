@@ -6,7 +6,7 @@ using System.Text;
 using EHRsystem.Data;
 using EHRsystem.Models;
 using EHRsystem.Models.Entities;
-using System; // Added for DateTime
+using System;
 
 namespace EHRsystem.Controllers
 {
@@ -62,7 +62,6 @@ namespace EHRsystem.Controllers
 
             User user;
 
-            // ✅ Instantiate correct subclass
             switch (Role)
             {
                 case "Doctor":
@@ -72,7 +71,7 @@ namespace EHRsystem.Controllers
                         Email = Email,
                         PasswordHash = HashPassword(Password),
                         Role = "Doctor",
-                        Specialty = "", // Corrected: Using 'Specialty'
+                        Specialty = "",
                         Location = ""
                     };
                     break;
@@ -108,6 +107,7 @@ namespace EHRsystem.Controllers
             _context.Users.Add(user);
             _context.SaveChanges();
 
+            TempData["SuccessMessage"] = $"User {user.Name} ({user.Role}) created successfully!";
             return RedirectToAction("ManageUsers");
         }
 
@@ -137,13 +137,11 @@ namespace EHRsystem.Controllers
             user.Email = updatedUser.Email;
             user.Role = updatedUser.Role;
 
-            // Handle specific properties for Doctor if the user is a Doctor
             if (user is Doctor doctor && updatedUser is Doctor updatedDoctor)
             {
-                doctor.Specialty = updatedDoctor.Specialty; // Corrected: Use Specialty
+                doctor.Specialty = updatedDoctor.Specialty;
                 doctor.Location = updatedDoctor.Location;
             }
-            // Handle specific properties for Patient if the user is a Patient
             else if (user is Patient patient && updatedUser is Patient updatedPatient)
             {
                 patient.NationalId = updatedPatient.NationalId;
@@ -151,13 +149,13 @@ namespace EHRsystem.Controllers
                 patient.BirthDate = updatedPatient.BirthDate;
             }
 
-
             if (!string.IsNullOrWhiteSpace(newPassword))
             {
                 user.PasswordHash = HashPassword(newPassword);
             }
 
             _context.SaveChanges();
+            TempData["SuccessMessage"] = $"User {user.Name} updated successfully!";
             return RedirectToAction("ManageUsers");
         }
 
@@ -186,6 +184,7 @@ namespace EHRsystem.Controllers
             _context.Users.Remove(user);
             _context.SaveChanges();
 
+            TempData["SuccessMessage"] = $"User {user.Name} deleted successfully!";
             return RedirectToAction("ManageUsers");
         }
 
@@ -198,9 +197,4 @@ namespace EHRsystem.Controllers
             return Convert.ToBase64String(hash);
         }
     }
-
-    // Optional: Admin class implementation
-    // No explicit AdminUser class definition is strictly needed if it just inherits User without new properties
-    // but kept here for consistency with AccountController if you have one.
-    // public class AdminUser : User { }
 }

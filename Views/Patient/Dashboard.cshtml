@@ -1,267 +1,132 @@
-@* @{
+@{
     ViewData["Title"] = "Patient Dashboard";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensure this path is correct
 }
 
-<div class="container py-4">
-    <h2 class="fw-bold mb-4">Patient Dashboard</h2>
-    <p class="text-muted">Welcome back, @ViewBag.PatientName</p>
+<h2 class="mb-4 text-primary fw-bold">Patient Dashboard</h2>
+<p class="lead">Welcome back, <span class="text-secondary fw-semibold">@ViewBag.PatientName</span></p>
 
-    <!-- Overview Summary Cards -->
-    <div class="row g-4 mb-4">
-        <!-- Appointments -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 rounded-4 text-center p-3">
-                <div class="card-body">
-                    <h6 class="text-muted">Upcoming Appointments</h6>
-                    <h3>@ViewBag.UpcomingAppointmentsCount</h3>
-                    <p class="small text-muted">Next: @ViewBag.NextAppointmentDate</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Medical Files -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 rounded-4 text-center p-3">
-                <div class="card-body">
-                    <h5 class="card-title text-primary fw-bold">My Medical Files</h5>
-                    <p class="card-text">Upload or manage your medical files securely.</p>
-                    <a asp-controller="MedicalFile" asp-action="Index" class="btn btn-outline-primary mb-2">Manage
-                        Files</a>
-                    <a href="/MedicalFile/index" class="btn btn-outline-info fw-semibold">Manage Now</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Prescriptions -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 rounded-4 text-center p-3">
-                <div class="card-body">
-                    <h6 class="text-muted">Prescriptions</h6>
-                    <h3>@ViewBag.PrescriptionsCount</h3>
-                    <p class="small text-muted">@ViewBag.ActivePrescriptionsCount active</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- My Doctors -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 rounded-4 text-center p-3">
-                <div class="card-body">
-                    <h6 class="text-muted">My Doctors</h6>
-                    <h3>@ViewBag.MyDoctorsCount</h3>
-                    <p class="small text-muted">Primary care & specialists</p>
-                </div>
+<div class="row g-4 mb-5">
+    @* Card 1: Upcoming Appointments *@
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 rounded-4">
+            <div class="card-body text-center py-4">
+                <h5 class="card-title text-primary fw-bold">Upcoming Appointments</h5>
+                <p class="card-text fs-2 text-info">@ViewBag.UpcomingAppointmentsCount</p>
+                <p class="card-text text-muted">Next: @(string.IsNullOrEmpty(ViewBag.NextAppointmentDate) ? "None" : ViewBag.NextAppointmentDate)</p>
+                <a href="/Appointment/MyAppointments" class="btn btn-outline-primary btn-sm mt-2">View My Appointments</a>
             </div>
         </div>
     </div>
 
-    <!-- 🔹 New Find Doctor Card Row -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="card shadow border-info border-2 rounded-4 text-center p-3 h-100">
-                <div class="card-body">
-                    <i class="fas fa-user-md fa-2x text-info mb-2"></i>
-                    <h5 class="card-title text-info fw-bold">Find a Doctor</h5>
-                    <p class="text-muted">Search doctors by specialty, location, or name to book an appointment.</p>
-                    <a href="/Patient/BookAppointment" class="btn btn-outline-info fw-semibold">Search Now</a>
-                </div>
+    @* Card 2: My Medical Files *@
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 rounded-4">
+            <div class="card-body text-center py-4">
+                <h5 class="card-title text-primary fw-bold">My Medical Files</h5>
+                <p class="card-text text-muted">Upload or manage your medical files securely.</p>
+                <a href="/MedicalFile/MyFiles" class="btn btn-outline-success mt-3">Manage Files</a>
             </div>
         </div>
     </div>
 
-    <!-- Medical Records + Appointments Preview -->
-    <div class="row g-4">
-        <!-- Recent Medical Records -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Recent Medical Records</h5>
-                    @if (ViewBag.RecentMedicalRecords != null)
-                    {
-                        foreach (var record in ViewBag.RecentMedicalRecords)
-                        {
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div>
-                                    <strong>@record.Description</strong><br />
-                                    <small class="text-muted">@record.UploadedAt.ToShortDateString()</small>
-                                </div>
-                                <a href="/MedicalFile" class="btn btn-sm btn-outline-primary">View</a>
-
-                            </div>
-                        }
-                    }
-                    <a href="/MedicalFile" class="d-block mt-3 text-decoration-none">View all medical
-                        records</a>
-                </div>
+    @* Card 3: Prescriptions (Now Clickable) *@
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 rounded-4">
+            <div class="card-body text-center py-4">
+                <h5 class="card-title text-primary fw-bold">Prescriptions</h5>
+                <p class="card-text fs-2 text-warning">@ViewBag.ActivePrescriptionsCount</p>
+                <p class="card-text text-muted">active</p>
+                <a href="/Prescription/Index" class="btn btn-outline-warning btn-sm mt-2">View Prescriptions</a>
             </div>
         </div>
+    </div>
 
-        <!-- Upcoming Appointments -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Upcoming Appointments</h5>
-                    @if (ViewBag.UpcomingAppointments != null)
-                    {
-                        foreach (var appt in ViewBag.UpcomingAppointments)
-                        {
-                            <div class="mb-3">
-                                <strong>@appt.DoctorName</strong><br />
-                                <small class="text-muted">@appt.AppointmentDate.ToString("f")</small><br />
-                                <span class="badge bg-light text-dark">@appt.Specialization</span>
-                                <div class="mt-2">
-                                    <a href="#" class="btn btn-sm btn-outline-secondary">Reschedule</a>
-                                </div>
-                            </div>
-                        }
-                    }
-                    <a href="/Patient/BookAppointment" class="btn btn-success mt-3 w-100">Schedule New Appointment</a>
-                </div>
+    @* Card 4: My Doctors *@
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100 shadow-sm border-0 rounded-4">
+            <div class="card-body text-center py-4">
+                <h5 class="card-title text-primary fw-bold">My Doctors</h5>
+                <p class="card-text fs-2 text-secondary">@ViewBag.MyDoctorsCount</p>
+                <p class="card-text text-muted">primary care & specialists</p>
+                <a href="/Patient/MyDoctors" class="btn btn-outline-secondary btn-sm mt-2">View My Doctors</a>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-} *@
-
-
-@{
-    ViewData["Title"] = "Patient Dashboard";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<div class="container py-4">
-    <h2 class="fw-bold mb-4">Patient Dashboard</h2>
-    <p class="text-muted">Welcome back, @ViewBag.PatientName</p>
-    <!-- 🔔 Reminder Section -->
-
-    @if (ViewBag.ReminderMessage != null)
-    {
-        <div class="alert alert-info alert-dismissible fade show rounded-3 fw-semibold" role="alert">
-            @ViewBag.ReminderMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
-
-    <!-- Overview Summary Cards -->
-    <div class="row g-4 mb-4">
-        <!-- Appointments -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 rounded-4 text-center p-3">
-                <div class="card-body">
-                    <h6 class="text-muted">Upcoming Appointments</h6>
-                    <h3>@ViewBag.UpcomingAppointmentsCount</h3>
-                    <p class="small text-muted">Next: @ViewBag.NextAppointmentDate</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Medical Files -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 rounded-4 text-center p-3">
-                <div class="card-body">
-                    <h5 class="card-title text-primary fw-bold">My Medical Files</h5>
-                    <p class="card-text">Upload or manage your medical files securely.</p>
-                    <a asp-controller="MedicalFile" asp-action="Index" class="btn btn-outline-primary mb-2">Manage
-                        Files</a>
-                    <a href="/MedicalFile/index" class="btn btn-outline-info fw-semibold">Manage Now</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Prescriptions -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 rounded-4 text-center p-3">
-                <div class="card-body">
-                    <h6 class="text-muted">Prescriptions</h6>
-                    <h3>@ViewBag.PrescriptionsCount</h3>
-                    <p class="small text-muted">@ViewBag.ActivePrescriptionsCount active</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- My Doctors -->
-        <div class="col-md-3">
-            <div class="card shadow-sm border-0 rounded-4 text-center p-3">
-                <div class="card-body">
-                    <h6 class="text-muted">My Doctors</h6>
-                    <h3>@ViewBag.MyDoctorsCount</h3>
-                    <p class="small text-muted">Primary care & specialists</p>
-                </div>
+<div class="row g-4 mb-5">
+    @* Card: Find a Doctor (Existing) *@
+    <div class="col-md-6 col-sm-12">
+        <div class="card h-100 shadow-sm border-primary rounded-4 border-2">
+            <div class="card-body text-center py-4">
+                <h5 class="card-title text-primary fw-bold mb-3">Find a Doctor</h5>
+                <p class="card-text text-muted">Search doctors by specialty, location, or name to book an appointment.</p>
+                <a href="/Patient/FindDoctor" class="btn btn-primary px-4 mt-3">Search Now</a>
             </div>
         </div>
     </div>
 
-    <!-- Find Doctor -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-4">
-            <div class="card shadow border-info border-2 rounded-4 text-center p-3 h-100">
-                <div class="card-body">
-                    <i class="fas fa-user-md fa-2x text-info mb-2"></i>
-                    <h5 class="card-title text-info fw-bold">Find a Doctor</h5>
-                    <p class="text-muted">Search doctors by specialty, location, or name to book an appointment.</p>
-                    <a href="/Patient/BookAppointment" class="btn btn-outline-info fw-semibold">Search Now</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Medical Records + My Appointments -->
-    <div class="row g-4">
-        <!-- Recent Medical Records -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">Recent Medical Records</h5>
-                    @if (ViewBag.RecentMedicalRecords != null)
+    @* Card: Schedule New Appointment (Existing) *@
+    <div class="col-md-6 col-sm-12">
+        <div class="card h-100 shadow-sm border-success rounded-4 border-2">
+            <div class="card-body text-center py-4">
+                <h5 class="card-title text-success fw-bold mb-3">My Appointments</h5>
+                <p class="card-text text-muted">
+                    @if (ViewBag.UpcomingAppointmentsCount == 0)
                     {
-                        foreach (var record in ViewBag.RecentMedicalRecords)
-                        {
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div>
-                                    <strong>@record.Description</strong><br />
-                                    <small class="text-muted">@record.UploadedAt.ToShortDateString()</small>
-                                </div>
-                                <a href="/MedicalFile" class="btn btn-sm btn-outline-primary">View</a>
-                            </div>
-                        }
-                    }
-                    <a href="/MedicalFile" class="d-block mt-3 text-decoration-none">View all medical records</a>
-                </div>
-            </div>
-        </div>
-
-
-
-        <!-- My Appointments -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body">
-                    <h5 class="card-title mb-3">My Appointments</h5>
-                    @if (ViewBag.UpcomingAppointments != null && ViewBag.UpcomingAppointments.Count > 0)
-                    {
-                        foreach (var appt in ViewBag.UpcomingAppointments)
-                        {
-                            <div class="mb-3">
-                                <strong>@appt.DoctorName</strong><br />
-                                <small class="text-muted">@appt.AppointmentDate.ToString("f")</small><br />
-                                <span class="badge bg-light text-dark">@appt.Specialization</span>
-                                <div class="mt-2">
-                                    <a asp-controller="Appointment" asp-action="Unbook" asp-route-id="@appt.Id"
-                                        class="btn btn-sm btn-outline-danger">Unbook</a>
-                                </div>
-                            </div>
-                        }
+                        <span>You have no upcoming appointments.</span>
                     }
                     else
                     {
-                        <p class="text-muted">You have no upcoming appointments.</p>
+                        <span>You have @ViewBag.UpcomingAppointmentsCount upcoming appointments.</span>
                     }
+                </p>
+                <a href="/Appointment/Book" class="btn btn-success px-4 mt-3">Schedule New Appointment</a>
+            </div>
+        </div>
+    </div>
+</div>
 
-                    <a href="/Patient/BookAppointment" class="btn btn-success mt-3 w-100">Schedule New Appointment</a>
+<div class="row g-4 mb-4">
+    @* Section: Recent Medical Records - "View all" as a button *@
+    <div class="col-md-6 col-sm-12">
+        <div class="card h-100 shadow-sm border-info rounded-4 border-2">
+            <div class="card-body text-center">
+                <h5 class="card-title text-info fw-bold mb-3">Recent Medical Records</h5>
+                @if (ViewBag.RecentMedicalRecords != null && ViewBag.RecentMedicalRecords.Count > 0)
+                {
+                    <ul class="list-group list-group-flush text-start">
+                        @foreach (var record in ViewBag.RecentMedicalRecords)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@record.FileName (@record.UploadedAt.ToString("yyyy-MM-dd"))</span>
+                                <a href="/MedicalFile/Download/@record.Id" class="btn btn-sm btn-outline-info">View</a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted text-center mt-3">No recent medical records found.</p>
+                }
+                @* CHANGED: From text-center div with btn-link to d-grid with btn-outline-info *@
+                <div class="d-grid gap-2 col-md-8 mx-auto mt-4">
+                    <a href="/MedicalFile/MyFiles" class="btn btn-outline-info">View all medical records</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* NEW SECTION: Prescriptions Management - Text Centered *@
+    <div class="col-md-6 col-sm-12">
+        <div class="card h-100 shadow-sm border-warning rounded-4 border-2">
+            <div class="card-body text-center">
+                <h5 class="card-title text-warning fw-bold mb-3">Prescription Management</h5>
+                <p class="card-text text-muted text-center">Quickly view your active prescriptions or add a new one.</p>
+                <div class="d-grid gap-2 col-md-8 mx-auto mt-4">
+                    <a href="/Prescription/Index" class="btn btn-outline-warning">View All Prescriptions</a>
+                    <a href="/Prescription/Create" class="btn btn-warning">Add New Prescription</a>
                 </div>
             </div>
         </div>
@@ -269,5 +134,5 @@
 </div>
 
 @section Scripts {
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

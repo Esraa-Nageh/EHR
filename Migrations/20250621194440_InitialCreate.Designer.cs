@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EHRsystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250620230839_AddDoctorRating")]
-    partial class AddDoctorRating
+    [Migration("20250621194440_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,8 +73,8 @@ namespace EHRsystem.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
+                    b.Property<double?>("Rating")
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
 
@@ -236,10 +236,6 @@ namespace EHRsystem.Migrations
                     b.HasBaseType("EHRsystem.Models.User");
 
                     b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Specialization")
                         .IsRequired()
                         .HasColumnType("longtext");
 

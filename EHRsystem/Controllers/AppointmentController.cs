@@ -1,10 +1,11 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using EHRsystem.Data;
 using EHRsystem.Models.Entities;
 using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace EHRsystem.Controllers
 {
@@ -17,203 +18,211 @@ namespace EHRsystem.Controllers
             _context = context;
         }
 
-        // === PATIENT BOOKING PAGE ===
+        private bool IsLoggedIn()
+        {
+            return HttpContext.Session.GetString("UserId") != null;
+        }
+
+        private int GetUserId()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                throw new InvalidOperationException("User ID is missing from session.");
+            }
+            return userId.Value;
+        }
+
+        private string GetUserRole()
+        {
+            return HttpContext.Session.GetString("UserRole") ?? "";
+        }
+
+        // === PATIENT BOOKING PAGE (Browse available slots) ===
         [HttpGet]
         public IActionResult Book()
         {
-            if (HttpContext.Session.GetString("UserRole") != "Patient")
+            if (GetUserRole() != "Patient")
                 return Unauthorized();
 
             var availableAppointments = _context.Appointments
+                .Include(a => a.Doctor)
                 .Where(a => !a.IsBooked && a.AppointmentDate >= DateTime.Now)
+                .OrderBy(a => a.AppointmentDate)
                 .ToList();
 
             return View(availableAppointments);
         }
 
-
+        // === PATIENT: View My Booked Appointments ===
         [HttpGet]
-        public IActionResult Manage()
+        public IActionResult MyAppointments()
         {
-            if (HttpContext.Session.GetString("UserRole") != "Doctor")
+            if (GetUserRole() != "Patient")
                 return Unauthorized();
 
-            int? doctorId = HttpContext.Session.GetInt32("UserId");
-            if (doctorId == null)
-                return RedirectToAction("Login", "Account");
+            int patientId = GetUserId();
 
             var myAppointments = _context.Appointments
-                .Where(a => a.DoctorId == doctorId.Value)
+                .Include(a => a.Doctor)
+                .Where(a => a.PatientId == patientId && a.IsBooked)
                 .OrderBy(a => a.AppointmentDate)
                 .ToList();
 
             return View(myAppointments);
         }
 
+        // === DOCTOR MANAGE APPOINTMENTS PAGE ===
+        [HttpGet]
+        public IActionResult Manage()
+        {
+            if (GetUserRole() != "Doctor")
+                return Unauthorized();
 
+            int doctorId = GetUserId();
 
-        // === DOCTOR MANAGE PAGE ===
-        // [HttpGet]
-        // public IActionResult Manage()
-        // {
-        //     if (HttpContext.Session.GetString("UserRole") != "Doctor")
-        //         return Unauthorized();
+            var myAppointments = _context.Appointments
+                .Include(a => a.Patient)
+                .Where(a => a.DoctorId == doctorId)
+                .OrderBy(a => a.AppointmentDate)
+                .ToList();
 
-        //     // int doctorId = int.Parse(HttpContext.Session.GetString("UserId"));
-        //     var userIdStr = HttpContext.Session.GetString("UserId");
+            return View(myAppointments);
+        }
 
-        //     if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int doctorId))
-        //     {
-        //         return RedirectToAction("Login", "Account");
-        //     }
-
-        //     var myAppointments = _context.Appointments
-        //         .Where(a => a.DoctorId == doctorId)
-        //         .OrderBy(a => a.AppointmentDate)
-        //         .ToList();
-
-        //     return View(myAppointments);
-        // }
-
-        // // === ADD SLOT (GET) ===
-        // [HttpGet]
-        // public IActionResult Create()
-        // {
-        //     if (HttpContext.Session.GetString("UserRole") != "Doctor")
-        //         return Unauthorized();
-
-        //     return View();
-        // }
-
-        // === ADD SLOT (POST) ===
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public IActionResult Create(Appointment appointment)
-        // {
-        //     if (HttpContext.Session.GetString("UserRole") != "Doctor")
-        //         return Unauthorized();
-
-        //     appointment.DoctorId = int.Parse(HttpContext.Session.GetString("UserId"));
-        //     appointment.IsBooked = false;
-        //     appointment.Status = "Available";
-
-        //     if (ModelState.IsValid)
-        //     {
-        //         _context.Appointments.Add(appointment);
-        //         _context.SaveChanges();
-        //         return RedirectToAction("Manage");
-        //     }
-
-        //     return View(appointment);
-        // }
-
+        // === DOCTOR: ADD NEW APPOINTMENT SLOT (GET) ===
         [HttpGet]
         public IActionResult Create()
         {
-            if (HttpContext.Session.GetString("UserRole") != "Doctor")
+            if (GetUserRole() != "Doctor")
                 return Unauthorized();
 
             return View();
         }
 
+        // === DOCTOR: ADD NEW APPOINTMENT SLOT (POST) ===
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Appointment appointment)
         {
-            if (HttpContext.Session.GetString("UserRole") != "Doctor")
+            if (GetUserRole() != "Doctor")
                 return Unauthorized();
 
-            int? doctorId = HttpContext.Session.GetInt32("UserId");
-            if (doctorId == null)
-                return RedirectToAction("Login", "Account");
-
-            appointment.DoctorId = doctorId.Value;
+            appointment.DoctorId = GetUserId();
             appointment.IsBooked = false;
             appointment.Status = "Available";
 
-            // 🔍 DEBUG: Show all model state errors
-            foreach (var entry in ModelState)
-            {
-                foreach (var error in entry.Value.Errors)
-                {
-                    Console.WriteLine($"Field: {entry.Key} | Error: {error.ErrorMessage}");
-                }
-            }
-
             if (!ModelState.IsValid)
             {
-                ViewBag.Error = "Invalid form data. Please try again.";
+                ViewBag.Error = "Invalid form data. Please check the appointment date and time.";
                 return View(appointment);
             }
 
             _context.Appointments.Add(appointment);
             _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Appointment slot created successfully!";
             return RedirectToAction("Manage");
         }
 
-
-        // === DELETE SLOT (Doctor can delete only unbooked) ===
+        // === DELETE SLOT (Doctor can delete only their own unbooked slots) ===
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
+            if (GetUserRole() != "Doctor")
+                return Unauthorized();
+
             var appt = _context.Appointments.FirstOrDefault(a => a.Id == id);
-            if (appt != null && !appt.IsBooked)
+            if (appt == null)
+                return NotFound();
+
+            if (appt.DoctorId != GetUserId())
+                return Forbid();
+
+            if (appt.IsBooked)
             {
-                _context.Appointments.Remove(appt);
-                _context.SaveChanges();
+                TempData["ErrorMessage"] = "Cannot delete a booked appointment.";
+                return RedirectToAction("Manage");
             }
+
+            _context.Appointments.Remove(appt);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Appointment slot deleted successfully.";
             return RedirectToAction("Manage");
         }
 
-
-        // === GET: Edit Appointment ===
+        // === PATIENT: GET form to reschedule/edit their appointment ===
         [HttpGet]
         public IActionResult EditAppointment(int id)
         {
+            if (GetUserRole() != "Patient")
+                return Unauthorized();
+
             var appointment = _context.Appointments.FirstOrDefault(a => a.Id == id);
             if (appointment == null)
                 return NotFound();
 
-            return View(appointment); // Make sure you create the view
+            if (appointment.PatientId != GetUserId())
+                return Forbid();
+
+            return View(appointment);
         }
 
-        // === POST: Save Appointment ===
+        // === PATIENT: POST to save rescheduled/edited appointment ===
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditAppointment(Appointment updatedAppointment)
         {
-            if (!ModelState.IsValid)
-                return View(updatedAppointment);
+            if (GetUserRole() != "Patient")
+                return Unauthorized();
 
-            var existing = _context.Appointments.FirstOrDefault(a => a.Id == updatedAppointment.Id);
-            if (existing == null)
+            var original = _context.Appointments.FirstOrDefault(a => a.Id == updatedAppointment.Id);
+            if (original == null)
                 return NotFound();
 
-            existing.AppointmentDate = updatedAppointment.AppointmentDate;
-            _context.SaveChanges();
+            if (original.PatientId != GetUserId())
+                return Forbid();
 
-            return RedirectToAction("Dashboard", "Patient");
+            original.AppointmentDate = updatedAppointment.AppointmentDate;
+            original.Reason = updatedAppointment.Reason;
+            original.Status = "Rescheduled";
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Error = "Invalid form data. Please check the date and time.";
+                return View(updatedAppointment);
+            }
+
+            _context.SaveChanges();
+            TempData["SuccessMessage"] = "Appointment rescheduled successfully!";
+            return RedirectToAction("MyAppointments");
         }
 
-
-        [HttpGet]
+        // === PATIENT: Unbook their own appointment ===
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Unbook(int id)
         {
+            if (GetUserRole() != "Patient")
+                return Unauthorized();
+
             var appointment = _context.Appointments.FirstOrDefault(a => a.Id == id);
             if (appointment == null)
                 return NotFound();
 
-            // Only the patient who booked can unbook
-            int patientId = HttpContext.Session.GetInt32("UserId") ?? 0;
-            if (appointment.PatientId != patientId)
-                return Unauthorized();
+            if (appointment.PatientId != GetUserId())
+                return Forbid();
 
-            appointment.PatientId = null; // or 0 depending on your model
+            appointment.PatientId = null;
             appointment.IsBooked = false;
+            appointment.Status = "Available";
+            appointment.Reason = string.Empty; // Corrected to assign string.Empty
 
             _context.SaveChanges();
-            return RedirectToAction("Dashboard", "Patient");
+            TempData["SuccessMessage"] = "Appointment unbooked successfully!";
+            return RedirectToAction("MyAppointments");
         }
-
     }
 }
