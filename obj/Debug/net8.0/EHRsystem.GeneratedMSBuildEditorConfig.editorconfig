@@ -28,6 +28,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[F:/EHRsystem-main/EHR/Views/Admin/CreatePharmacyRecommendation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlUGhhcm1hY3lSZWNvbW1lbmRhdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [F:/EHRsystem-main/EHR/Views/Admin/CreateUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlVXNlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -48,8 +52,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTGlzdFVzZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[F:/EHRsystem-main/EHR/Views/Admin/ManageDoctors.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlRG9jdG9ycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/EHRsystem-main/EHR/Views/Admin/ManagePatients.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlUGF0aWVudHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [F:/EHRsystem-main/EHR/Views/Admin/ManageUsers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTWFuYWdlVXNlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/EHRsystem-main/EHR/Views/Admin/ViewPatientMedicalHistory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVmlld1BhdGllbnRNZWRpY2FsSGlzdG9yeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [F:/EHRsystem-main/EHR/Views/Appointment/Book.cshtml]
@@ -84,8 +100,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRG9jdG9yXEVkaXRQcm9maWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[F:/EHRsystem-main/EHR/Views/Doctor/MyWrittenPrescriptions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRG9jdG9yXE15V3JpdHRlblByZXNjcmlwdGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [F:/EHRsystem-main/EHR/Views/Doctor/PatientHistory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRG9jdG9yXFBhdGllbnRIaXN0b3J5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/EHRsystem-main/EHR/Views/Doctor/ViewPatient.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRG9jdG9yXFZpZXdQYXRpZW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [F:/EHRsystem-main/EHR/Views/Doctor/ViewPatients.cshtml]
@@ -110,6 +134,18 @@ build_metadata.AdditionalFiles.CssScope =
 
 [F:/EHRsystem-main/EHR/Views/Medicalfile/ViewFiles.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVkaWNhbGZpbGVcVmlld0ZpbGVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/EHRsystem-main/EHR/Views/MedicalRecord/UploadFile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVkaWNhbFJlY29yZFxVcGxvYWRGaWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/EHRsystem-main/EHR/Views/MedicalRecord/ViewFiles.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVkaWNhbFJlY29yZFxWaWV3RmlsZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/EHRsystem-main/EHR/Views/Patient/AddPrescription.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF0aWVudFxBZGRQcmVzY3JpcHRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [F:/EHRsystem-main/EHR/Views/Patient/BookAppointment.cshtml]
@@ -152,6 +188,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF0aWVudFxNeUFwcG9pbnRtZW50cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[F:/EHRsystem-main/EHR/Views/Patient/MyPrescriptions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF0aWVudFxNeVByZXNjcmlwdGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/EHRsystem-main/EHR/Views/Patient/SearchDoctor.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF0aWVudFxTZWFyY2hEb2N0b3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [F:/EHRsystem-main/EHR/Views/Patient/UploadMedicalFile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGF0aWVudFxVcGxvYWRNZWRpY2FsRmlsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -162,6 +206,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [F:/EHRsystem-main/EHR/Views/Prediction/PredictionResult.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlZGljdGlvblxQcmVkaWN0aW9uUmVzdWx0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/EHRsystem-main/EHR/Views/Prescription/Add.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJlc2NyaXB0aW9uXEFkZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [F:/EHRsystem-main/EHR/Views/Prescription/AddPrescription.cshtml]

@@ -1,0 +1,152 @@
+@model EHRsystem.ViewModels.PatientHistoryViewModel
+@using EHRsystem.Models.Entities; @* ADDED THIS LINE *@
+
+@{
+    ViewData["Title"] = "Patient Medical History";
+}
+
+@* Ensure Font Awesome is linked for icons, e.g., in _Layout.cshtml or here: *@
+@* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" /> *@
+
+
+<h1 class="mb-4">Patient Medical History for @Model.Patient.Name</h1>
+
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5>Patient Details</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>Email:</strong> @Model.Patient.Email</p>
+        <p><strong>Role:</strong> @Model.Patient.Role</p>
+        @if (Model.Patient is Patient patientDetails) @* This line now correctly resolves Patient type *@
+        {
+            <p><strong>National ID:</strong> @patientDetails.NationalId</p>
+            <p><strong>Gender:</strong> @patientDetails.Gender</p>
+            <p><strong>Date of Birth:</strong> @patientDetails.BirthDate.ToShortDateString()</p>
+            @* Add other patient-specific details here if available in your Patient model *@
+        }
+    </div>
+</div>
+
+<h4 class="mt-4">Appointments</h4>
+@if (Model.Appointments != null && Model.Appointments.Any())
+{
+    <ul class="list-group mb-4">
+        @foreach (var appointment in Model.Appointments.OrderByDescending(a => a.AppointmentDate))
+        {
+            <li class="list-group-item">
+                <strong>Date:</strong> @appointment.AppointmentDate.ToString("dd MMMM yyyy HH:mm")<br />
+                <strong>Doctor:</strong> @appointment.Doctor?.Name<br />
+                <strong>Reason:</strong> @appointment.Reason<br />
+                <strong>Status:</strong> @appointment.Status
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No appointments recorded for this patient.</p>
+}
+
+<h4 class="mt-4">Medical Files</h4>
+@if (Model.MedicalFiles != null && Model.MedicalFiles.Any())
+{
+    <ul class="list-group mb-4">
+        @foreach (var file in Model.MedicalFiles.OrderByDescending(mf => mf.UploadedAt))
+        {
+            <li class="list-group-item">
+                @* Changed 'FileName' to 'Title' as per MedicalFile.cs *@
+                <strong>File Name:</strong> <a href="@Url.Content(file.FilePath)" target="_blank">@file.Title</a><br />
+                <strong>Uploaded by:</strong> @file.Doctor?.Name<br />
+                <strong>Uploaded At:</strong> @file.UploadedAt.ToString("dd MMMM yyyy HH:mm")
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No medical files recorded for this patient.</p>
+}
+
+<h4 class="mt-4">Prescriptions</h4>
+@if (Model.Prescriptions != null && Model.Prescriptions.Any())
+{
+    <ul class="list-group mb-4">
+        @foreach (var prescription in Model.Prescriptions.OrderByDescending(p => p.StartDate))
+        {
+            <li class="list-group-item">
+                <h5>@prescription.MedicationName (@prescription.Dosage)</h5>
+                <p><strong>Prescribed by:</strong> @prescription.Doctor?.Name</p>
+                <p><strong>Date:</strong> @prescription.StartDate.ToShortDateString() - @prescription.EndDate.ToShortDateString()</p>
+                @* Changed 'Instructions' to 'Notes' as per Prescription.cs *@
+                <p><strong>Instructions:</strong> @prescription.Notes</p>
+
+                @if (prescription.PharmacyRecommendations != null && prescription.PharmacyRecommendations.Any())
+                {
+                    <h6 class="mt-2">Pharmacy Recommendations:</h6>
+                    <ul class="list-group list-group-flush mb-2">
+                        @foreach (var rec in prescription.PharmacyRecommendations)
+                        {
+                            <li class="list-group-item d-flex flex-wrap align-items-center">
+                                <div>
+                                    <strong>@rec.PharmacyName</strong> - @rec.PharmacyLocation
+                                    @* Handled nullable 'Price' property *@
+                                    @if (rec.Price.HasValue && rec.Price > 0)
+                                    {
+                                        <span class="badge bg-secondary ms-2">Price: @(rec.Price.Value.ToString("C"))</span>
+                                    } else if (!rec.Price.HasValue) {
+                                         <span class="badge bg-secondary ms-2">Price: N/A</span>
+                                    }
+                                </div>
+                                <div class="ms-auto">
+                                    @if (!string.IsNullOrWhiteSpace(rec.OnlineLink))
+                                    {
+                                        <a href="@rec.OnlineLink" target="_blank" class="btn btn-sm btn-outline-primary me-1">
+                                            <i class="fas fa-external-link-alt"></i> Online Link
+                                        </a>
+                                    }
+                                    <a asp-action="CreatePharmacyRecommendation" asp-route-prescriptionId="@prescription.Id" class="btn btn-sm btn-info">
+                                        <i class="fas fa-plus"></i> Add New Rec.
+                                    </a>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(rec.Notes))
+                                {
+                                    <p class="mt-1 mb-0 w-100"><small>Notes: @rec.Notes</small></p>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">No specific pharmacy recommendations for this prescription.</p>
+                    <a asp-action="CreatePharmacyRecommendation" asp-route-prescriptionId="@prescription.Id" class="btn btn-sm btn-info mb-2">
+                        <i class="fas fa-plus"></i> Add Recommendation
+                    </a>
+                }
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No prescriptions recorded for this patient.</p>
+}
+
+<h5 class="mt-4">General Pharmacy Search Tools:</h5>
+<div class="d-flex flex-wrap gap-2 mb-4">
+    <a href="https://www.google.com/maps/search/pharmacies+in+Egypt" target="_blank" class="btn btn-primary">
+        <i class="fas fa-map-marker-alt"></i> Find Pharmacies on Google Maps
+    </a>
+    <a href="https://www.chefaa.com/" target="_blank" class="btn btn-success">
+        <i class="fas fa-prescription-bottle"></i> Search on Chefaa.com (Egypt)
+    </a>
+    <a href="https://dawaya.com/" target="_blank" class="btn btn-info">
+        <i class="fas fa-pills"></i> Search on Dawaya.com (Egypt)
+    </a>
+    @* You can add more general links here as needed *@
+</div>
+
+<div class="mt-4">
+    <a asp-action="ManagePatients" class="btn btn-secondary">Back to Manage Patients</a>
+</div>

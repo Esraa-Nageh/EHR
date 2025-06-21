@@ -2,30 +2,45 @@
 
 @{
     ViewData["Title"] = "Edit Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <h2>Edit Your Profile</h2>
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow rounded-4 p-4">
+                <h2 class="text-primary mb-4 text-center">Edit Your Profile</h2>
 
-    <form asp-action="EditProfile" method="post">
-        <input type="hidden" asp-for="Id" />
+                <form asp-action="EditProfile" method="post">
+                    <input type="hidden" asp-for="Id" />
 
-        <div class="form-group">
-            <label asp-for="Name"></label>
-            <input asp-for="Name" class="form-control" />
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="NewPassword" class="form-label fw-semibold">New Password <small class="text-muted">(leave blank to keep old one)</small></label>
+                        <input name="NewPassword" type="password" class="form-control" />
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+                        <a asp-action="Dashboard" class="btn btn-outline-secondary px-4">Cancel</a>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label asp-for="Email"></label>
-            <input asp-for="Email" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label for="NewPassword">New Password (leave blank to keep old one)</label>
-            <input name="NewPassword" type="password" class="form-control" />
-        </div>
-
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a asp-action="Dashboard" class="btn btn-secondary">Cancel</a>
-    </form>
+    </div>
 </div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

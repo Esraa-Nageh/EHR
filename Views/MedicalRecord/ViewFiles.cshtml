@@ -1,0 +1,53 @@
+@model IEnumerable<EHRsystem.Models.Entities.MedicalFile>
+
+@{
+    ViewData["Title"] = "View Medical Files";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary mb-4 text-center fw-bold">Uploaded Medical Files</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            No medical files have been uploaded yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle shadow-sm rounded-4">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th>File Type</th>
+                        <th>Description</th>
+                        <th>File</th>
+                        <th>Uploaded At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var file in Model)
+                    {
+                        <tr class="text-center">
+                            <td>@file.FileType</td>
+                            <td>@file.Description</td>
+                            <td>
+                                <a href="@file.FilePath" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-download"></i> Download
+                                </a>
+                            </td>
+                            <td>@file.UploadedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a href="/Doctor/Dashboard" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>

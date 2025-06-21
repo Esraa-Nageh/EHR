@@ -1,0 +1,67 @@
+@model EHRsystem.Models.Entities.Prescription
+
+@{
+    ViewData["Title"] = "Add Prescription";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var patients = ViewBag.Patients as List<EHRsystem.Models.Entities.Patient>;
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary mb-4">Add Prescription</h2>
+
+    <form asp-action="Add" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label asp-for="PatientId" class="form-label">Select Patient</label>
+            <select asp-for="PatientId" class="form-select" asp-items="@(new SelectList(patients, "Id", "Name"))">
+                <option value="">-- Select a patient --</option>
+            </select>
+            <span asp-validation-for="PatientId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MedicationName" class="form-label"></label>
+            <input asp-for="MedicationName" class="form-control" />
+            <span asp-validation-for="MedicationName" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Dosage" class="form-label"></label>
+            <input asp-for="Dosage" class="form-control" />
+            <span asp-validation-for="Dosage" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Frequency" class="form-label"></label>
+            <input asp-for="Frequency" class="form-control" />
+            <span asp-validation-for="Frequency" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="StartDate" class="form-label"></label>
+            <input asp-for="StartDate" class="form-control" type="date" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="EndDate" class="form-label"></label>
+            <input asp-for="EndDate" class="form-control" type="date" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label"></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a asp-controller="Doctor" asp-action="Dashboard" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

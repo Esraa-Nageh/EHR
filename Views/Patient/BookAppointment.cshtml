@@ -2,89 +2,117 @@
 
 @{
     ViewData["Title"] = "Find the Right Doctor";
-    var doctors = ViewBag.Doctors as List<EHRsystem.Models.Entities.Doctor> ?? new List<EHRsystem.Models.Entities.Doctor>();
-    var specialties = ViewBag.Specialties as List<string> ?? new List<string>();
+    var doctors = ViewBag.Doctors as List<dynamic> ?? new List<dynamic>();
 }
 
 <div class="container mt-5">
     <h2 class="text-center text-primary fw-bold mb-4">Find the Right Doctor</h2>
 
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center">@TempData["Success"]</div>
+    }
+
+    @if (doctors.Any())
+    {
+        <p class="text-center text-success mb-3 fw-semibold">
+            Showing @doctors.Count matching doctor@(doctors.Count == 1 ? "" : "s")
+        </p>
+    }
+    else
+    {
+        <p class="text-center text-danger mb-3 fw-semibold">No doctors match the current criteria.</p>
+    }
+
     <!-- Filter Form -->
-    <form asp-action="BookAppointment" method="get" class="mb-5 p-4 bg-light shadow-sm rounded-4">
-        <div class="row g-3 align-items-end">
+    <form asp-action="BookAppointment" method="get">
+        <div class="row justify-content-center">
+            <div class="col-md-6 bg-light shadow p-4 rounded-4 border border-2 mb-4">
 
-            <div class="col-md-4">
-                <label for="specialty" class="form-label fw-semibold">Specialty</label>
-                <select name="specialty" class="form-select">
-                    <option value="">All Specialties</option>
-                    @foreach (var spec in specialties)
-                    {
-                        <option value="@spec">@spec</option>
-                    }
-                </select>
-            </div>
+                <!-- Specialty Dropdown -->
+                <div class="form-group mb-3">
+                    <label for="specialty" class="form-label fw-semibold">Specialty</label>
+                    <select id="specialty" name="specialty" class="form-control">
+                        <option value="">All Specialties</option>
+                        @foreach (var specialty in doctors.Select(d => (string)d.Specialty).Distinct())
+                        {
+                            var selected = Context.Request.Query["specialty"] == specialty ? "selected" : "";
+                            <option value="@specialty" >@specialty</option>
+                        }
+                    </select>
+                </div>
 
-            <div class="col-md-4">
-                <label for="location" class="form-label fw-semibold">Location</label>
-                <input name="location" class="form-control" placeholder="Enter city or area..." />
-            </div>
+                <!-- Location Input -->
+                <div class="form-group mb-3">
+                    <label for="location" class="form-label fw-semibold">Location</label>
+                    <input type="text" id="location" name="location" class="form-control"
+                           placeholder="Enter city or area..."
+                           value="@Context.Request.Query["location"]" />
+                </div>
 
-            <div class="col-md-4">
-                <label for="name" class="form-label fw-semibold">Doctor Name</label>
-                <input name="name" class="form-control" placeholder="Type name..." />
-            </div>
+                <!-- Doctor Name Input -->
+                <div class="form-group mb-3">
+                    <label for="name" class="form-label fw-semibold">Doctor Name</label>
+                    <input type="text" id="name" name="name" class="form-control"
+                           placeholder="Type name..."
+                           value="@Context.Request.Query["name"]" />
+                </div>
 
-            <div class="col-md-12 text-end mt-3">
-                <button type="submit" class="btn btn-primary me-2">Search</button>
-                <a asp-action="BookAppointment" class="btn btn-secondary">Reset</a>
+                <!-- Search Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary fw-bold px-4">Search</button>
+                    <a asp-action="Dashboard" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
             </div>
         </div>
     </form>
 
-    @if (!doctors.Any())
-    {
-        <p class="text-center text-danger">No doctors match the current criteria.</p>
-    }
-    else
-    {
-        <div class="row">
-            @foreach (var doctor in doctors)
-            {
-                var doctorAppointments = doctor.Appointments?.Where(a => !a.IsBooked).ToList() ?? new
-                List<EHRsystem.Models.Entities.Appointment>();
+    <!-- Appointment Booking Form -->
+    <form asp-action="BookAppointment" method="post">
+        <div class="row justify-content-center">
+            <div class="col-md-6 bg-white shadow p-4 rounded-4 border border-2">
 
-                <div class="col-md-6 mb-4">
-                    <div class="card border-info shadow-sm rounded-4">
-                        <div class="card-body">
-                            <h5 class="card-title text-info">@doctor.Name</h5>
-                            <p class="card-text">
-                                <strong>Specialty:</strong> @doctor.Specialty<br />
-                                <strong>Location:</strong> @doctor.Location
-                            </p>
-
-                            @if (!doctorAppointments.Any())
-                            {
-                                <p class="text-muted">No available slots.</p>
-                            }
-                            else
-                            {
-                                <ul class="list-group">
-                                    @foreach (var slot in doctorAppointments)
-                                    {
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            @slot.AppointmentDate.ToString("f")
-                                            <form asp-action="BookAppointment" method="post" class="ms-3">
-                                                <input type="hidden" name="appointmentId" value="@slot.Id" />
-                                                <button type="submit" class="btn btn-sm btn-success">Book</button>
-                                            </form>
-                                        </li>
-                                    }
-                                </ul>
-                            }
-                        </div>
-                    </div>
+                <!-- Doctor Selection -->
+                <div class="form-group mb-4">
+                    <label for="DoctorId" class="form-label fw-semibold">Choose Doctor</label>
+                    <select asp-for="DoctorId" class="form-control" id="doctorSelect" required>
+                        <option value="">-- Select a doctor --</option>
+                        @foreach (var d in doctors)
+                        {
+                            var selected = Model.DoctorId == d.Id ? "selected" : "";
+                            <option value="@d.Id"
+                                    data-name="@d.Name" data-location="@d.Location" data-specialty="@d.Specialty">
+                                @d.Name — @d.Specialty (@d.Location)
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="DoctorId" class="text-danger"></span>
                 </div>
-            }
+
+                <!-- Appointment Date -->
+                <div class="form-group mb-3">
+                    <label asp-for="AppointmentDate" class="form-label fw-semibold">Appointment Date & Time</label>
+                    <input asp-for="AppointmentDate" type="datetime-local" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
+                    <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                </div>
+
+                <!-- Reason -->
+                <div class="form-group mb-3">
+                    <label asp-for="Reason" class="form-label fw-semibold">Reason for Visit</label>
+                    <textarea asp-for="Reason" class="form-control" rows="3" placeholder="Describe symptoms or reason..." required></textarea>
+                    <span asp-validation-for="Reason" class="text-danger"></span>
+                </div>
+
+                <!-- Submit -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary px-4 fw-bold">Book Appointment</button>
+                    <a asp-action="Dashboard" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+            </div>
         </div>
-    }
+    </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,60 @@
+@model EHRsystem.Models.Entities.PharmacyRecommendation
+
+@{
+    ViewData["Title"] = "Add Pharmacy Recommendation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2>Add Pharmacy Recommendation</h2>
+    <hr />
+
+    <p class="mb-3">
+        For Prescription: <strong>@ViewBag.MedicationName</strong> (Patient: <strong>@ViewBag.PatientName</strong>)
+    </p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-controller="Admin" asp-action="CreatePharmacyRecommendation" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input type="hidden" asp-for="PrescriptionId" value="@ViewBag.PrescriptionId" />
+
+                <div class="mb-3">
+                    <label asp-for="PharmacyName" class="form-label"></label>
+                    <input asp-for="PharmacyName" class="form-control" />
+                    <span asp-validation-for="PharmacyName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PharmacyLocation" class="form-label"></label>
+                    <input asp-for="PharmacyLocation" class="form-control" />
+                    <span asp-validation-for="PharmacyLocation" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="OnlineLink" class="form-label"></label>
+                    <input asp-for="OnlineLink" class="form-control" />
+                    <span asp-validation-for="OnlineLink" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Notes" class="form-label"></label>
+                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Add Recommendation</button>
+                <a asp-controller="Admin" asp-action="ViewPatientMedicalHistory" asp-route-patientId="@ViewBag.PatientId" class="btn btn-secondary">Back to Patient History</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

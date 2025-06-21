@@ -184,7 +184,7 @@ namespace EHRsystem.Controllers
             string uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
             Directory.CreateDirectory(uploadsFolder);
 
-            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file!.FileName);
             string filePathOnServer = Path.Combine(uploadsFolder, fileName);
             string filePathForDb = "/uploads/" + fileName;
 

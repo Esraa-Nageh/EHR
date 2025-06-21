@@ -1,83 +1,5 @@
-@* @model dynamic
-
-@{
-    ViewData["Title"] = "Doctor Dashboard";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<div class="container py-4">
-    <h2 class="text-center mb-4 text-primary">Welcome, Doctor</h2>
-
-    <div class="row g-4">
-        <!-- Today's Appointments -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow rounded-4 border-0 h-100">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-primary">Today's Appointments</h5>
-                    <p class="card-text fs-4">@ViewBag.TodayAppointmentsCount</p>
-                    <a asp-controller="Appointment" asp-action="Manage" class="btn btn-outline-primary">View All</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- My Patients -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow rounded-4 border-0 h-100">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-primary">My Patients</h5>
-                    <p class="card-text fs-4">@ViewBag.MyPatientsCount</p>
-                    <a asp-controller="Patient" asp-action="List" class="btn btn-outline-primary">View Patients</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Medical Records -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow rounded-4 border-0 h-100">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-info fw-bold">Medical Files</h5>
-                    <p class="card-text">View or upload medical records for your patients.</p>
-                    <a asp-controller="MedicalFile" asp-action="Index" class="btn btn-outline-info">Go to Medical Files</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Write Prescription -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow rounded-4 border-0 h-100">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-primary">Write Prescription</h5>
-                    <p class="card-text fs-5">Add new prescription for a patient</p>
-                    <a asp-controller="Prescription" asp-action="Add" class="btn btn-outline-success">Create</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- View Recommendations -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow rounded-4 border-0 h-100">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-primary">Pharmacy Notes</h5>
-                    <p class="card-text fs-5">Check recommendations sent</p>
-                    <a asp-controller="PharmacyRecommendation" asp-action="List" class="btn btn-outline-info">View</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Profile -->
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow rounded-4 border-0 h-100">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-primary">My Profile</h5>
-                    <p class="card-text fs-5">Manage account and profile info</p>
-                    <a asp-controller="Doctor" asp-action="EditProfile" class="btn btn-outline-secondary">Edit</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> *@
-
-
+// File: Views/Doctor/Dashboard.cshtml
+// Last updated: Ensures "My Written Prescriptions" card is present and correctly linked.
 
 @model dynamic
 
@@ -87,18 +9,8 @@
 }
 
 <div class="container py-4">
-    <h2 class="text-center mb-4 text-primary">Welcome, Doctor</h2>
+    <h2 class="text-center mb-4 text-primary">Welcome, @ViewBag.DoctorName</h2>
 
-    <!-- 🔔 Reminder Section -->
-@if (ViewBag.ReminderMessage != null)
-{
-    <div class="alert alert-warning alert-dismissible fade show rounded-3 fw-semibold" role="alert">
-        @ViewBag.ReminderMessage
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
-   
     <div class="row g-4">
         <!-- Today's Appointments -->
         <div class="col-md-6 col-lg-4">
@@ -117,24 +29,18 @@
                 <div class="card-body text-center">
                     <h5 class="card-title text-primary">My Patients</h5>
                     <p class="card-text fs-4">@ViewBag.MyPatientsCount</p>
-                 
-                    @* <a asp-controller="Patient" asp-action="List" class="btn btn-outline-primary">View Patients</a> *@
-                
-                <a asp-controller="Doctor" asp-action="ViewPatients" class="btn btn-outline-primary">View Patients</a>
-
+                    <a asp-controller="Doctor" asp-action="ViewPatients" class="btn btn-outline-primary">View Patients</a>
                 </div>
             </div>
         </div>
-
-        
 
         <!-- Medical Records -->
         <div class="col-md-6 col-lg-4">
             <div class="card shadow rounded-4 border-0 h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-info fw-bold">Medical Files</h5>
-                    <p class="card-text">View or upload medical records for your patients.</p>
-                    <a asp-controller="MedicalFile" asp-action="Index" class="btn btn-outline-info">Go to Medical Files</a>
+                    <h5 class="card-title text-primary">Medical Records</h5>
+                    <p class="card-text fs-4">@ViewBag.RecordsCount</p>
+                    <a asp-controller="MedicalRecord" asp-action="ViewFiles" class="btn btn-outline-primary">Browse Records</a>
                 </div>
             </div>
         </div>
@@ -150,6 +56,19 @@
             </div>
         </div>
 
+        <!-- My Written Prescriptions -->
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Doctor" asp-action="MyWrittenPrescriptions" class="card-link text-decoration-none d-block h-100">
+                <div class="card shadow rounded-4 border-0 h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-primary">My Written Prescriptions</h5>
+                        <p class="card-text fs-4">@ViewBag.WrittenPrescriptionsCount</p>
+                        <p class="card-text fs-5">View all prescriptions you've written</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
         <!-- View Recommendations -->
         <div class="col-md-6 col-lg-4">
             <div class="card shadow rounded-4 border-0 h-100">
@@ -160,16 +79,6 @@
                 </div>
             </div>
         </div>
-
-<!-- Average Rating -->
-@* <div class="col-md-6 col-lg-4">
-    <div class="card shadow rounded-4 border-0 h-100">
-        <div class="card-body text-center">
-            <h5 class="card-title text-warning fw-bold">My Average Rating</h5>
-            <p class="fs-2 text-dark">@ViewBag.AverageRating.ToString("0.0") / 5</p>
-        </div>
-    </div>
-</div> *@
 
         <!-- Profile -->
         <div class="col-md-6 col-lg-4">

@@ -1,0 +1,53 @@
+@model List<EHRsystem.Models.Entities.Doctor>
+
+@{
+    ViewData["Title"] = "Manage Doctors";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensure this path is correct for your layout
+}
+
+<div class="container mt-5">
+    <h2>Manage Doctors</h2>
+    <p>List of all doctors in the system.</p>
+
+    <p>
+        <a asp-controller="Admin" asp-action="CreateUser" class="btn btn-primary">Create New Doctor</a>
+    </p>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Specialty</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var doctor in Model)
+                {
+                    <tr>
+                        <td>@doctor.Id</td>
+                        <td>@doctor.Name</td>
+                        <td>@doctor.Email</td>
+                        <td>@doctor.Specialty</td>
+                        <td>@doctor.Location</td>
+                        <td>
+                            <a asp-controller="Admin" asp-action="EditUser" asp-route-id="@doctor.Id" class="btn btn-sm btn-info">Edit</a> |
+                            <a asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@doctor.Id" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6">No doctors found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

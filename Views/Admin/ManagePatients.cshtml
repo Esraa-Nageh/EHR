@@ -1,0 +1,56 @@
+@model List<EHRsystem.Models.Entities.Patient>
+
+@{
+    ViewData["Title"] = "Manage Patients";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensure this path is correct for your layout
+}
+
+<div class="container mt-5">
+    <h2>Manage Patients</h2>
+    <p>List of all patients in the system.</p>
+
+    <p>
+        <a asp-controller="Admin" asp-action="CreateUser" class="btn btn-primary">Create New Patient</a>
+    </p>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>National ID</th>
+                <th>Gender</th>
+                <th>Birth Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var patient in Model)
+                {
+                    <tr>
+                        <td>@patient.Id</td>
+                        <td>@patient.Name</td>
+                        <td>@patient.Email</td>
+                        <td>@patient.NationalId</td>
+                        <td>@patient.Gender</td>
+                        <td>@patient.BirthDate.ToShortDateString()</td> @* CORRECTED LINE *@
+                        <td>
+                            <a asp-controller="Admin" asp-action="ViewPatientMedicalHistory" asp-route-patientId="@patient.Id" class="btn btn-sm btn-info">View History</a> |
+                            <a asp-controller="Admin" asp-action="EditUser" asp-route-id="@patient.Id" class="btn btn-sm btn-warning">Edit</a> |
+                            <a asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@patient.Id" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7">No patients found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

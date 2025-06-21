@@ -1,0 +1,128 @@
+
+@model EHRsystem.ViewModels.PatientHistoryViewModel
+@using EHRsystem.Models.Entities // To ensure entities are recognized if needed directly
+
+@{
+    ViewData["Title"] = "Patient History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary fw-bold text-center mb-5">Medical History of @Model.Patient.Name</h2>
+
+    <!-- Basic Info -->
+    <div class="mb-5 p-4 bg-light shadow-sm rounded-4 border border-2">
+        <h4 class="mb-3 text-secondary fw-semibold">Basic Information</h4>
+        <dl class="row">
+            <dt class="col-sm-3">Name:</dt>
+            <dd class="col-sm-9">@Model.Patient.Name</dd>
+
+            <dt class="col-sm-3">Email:</dt>
+            <dd class="col-sm-9">@Model.Patient.Email</dd>
+
+            <dt class="col-sm-3">Gender:</dt>
+            <dd class="col-sm-9">@Model.Patient.Gender</dd>
+
+            <dt class="col-sm-3">Birth Date:</dt>
+            <dd class="col-sm-9">@Model.Patient.BirthDate.ToString("MMM dd,yyyy")</dd>
+
+            <dt class="col-sm-3">National ID:</dt>
+            <dd class="col-sm-9">@Model.Patient.NationalId</dd>
+        </dl>
+    </div>
+
+    <!-- Medical Files -->
+    <div class="mb-5 p-4 bg-white shadow-sm rounded-4 border">
+        <h4 class="mb-3 text-secondary fw-semibold">Medical Files</h4>
+        @if (Model.MedicalFiles == null || !Model.MedicalFiles.Any())
+        {
+            <p class="text-muted">No medical files available.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>Title</th>
+                            <th>File Type</th>
+                            <th>Description</th>
+                            <th>Uploaded At</th>
+                            <th>Download</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var file in Model.MedicalFiles)
+                        {
+                            <tr class="text-center">
+                                <td>@file.Title</td>
+                                <td>@file.FileType</td>
+                                <td>@file.Description</td>
+                                <td>@file.UploadedAt.ToString("MMM dd,yyyy")</td>
+                                <td>
+                                    <a href="@file.FilePath" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-download"></i> View/Download
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <!-- Prescriptions -->
+    <div class="mb-5 p-4 bg-white shadow-sm rounded-4 border">
+        <h4 class="mb-3 text-secondary fw-semibold">Prescriptions</h4>
+        @if (Model.Prescriptions == null || !Model.Prescriptions.Any())
+        {
+            <p class="text-muted">No prescriptions available.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped align-middle">
+                    <thead class="table-primary text-center">
+                        <tr>
+                            <th>Medication Name</th>
+                            <th>Dosage</th>
+                            <th>Frequency</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th>Prescribed By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var prescription in Model.Prescriptions)
+                        {
+                            <tr class="text-center">
+                                <td>@prescription.MedicationName</td>
+                                <td>@prescription.Dosage</td>
+                                <td>@prescription.Frequency</td>
+                                <td>@prescription.StartDate.ToString("MMM dd,yyyy")</td>
+                                <td>@prescription.EndDate.ToString("MMM dd,yyyy")</td>
+                                <td>
+                                    <span class="badge @(prescription.IsActive ? "bg-success" : "bg-secondary")">
+                                        @(prescription.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </td>
+                                <td>
+                                    @(prescription.Doctor?.Name ?? "N/A")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center">
+        <a asp-action="ViewPatients" asp-controller="Doctor" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Patient List
+        </a>
+    </div>
+</div>

@@ -1,0 +1,55 @@
+@model List<EHRsystem.Models.Entities.Prescription>
+
+@{
+    ViewData["Title"] = "My Written Prescriptions";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Ensure this matches your actual layout file
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary mb-4">My Written Prescriptions</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            You have not written any prescriptions yet.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Medication Name</th>
+                    <th>Dosage</th>
+                    <th>Frequency</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Prescribed For</th> @* New column for patient's name *@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var prescription in Model)
+                {
+                    <tr>
+                        <td>@prescription.MedicationName</td>
+                        <td>@prescription.Dosage</td>
+                        <td>@prescription.Frequency</td>
+                        <td>@prescription.StartDate.ToShortDateString()</td>
+                        <td>@prescription.EndDate.ToShortDateString()</td>
+                        <td>
+                            @(prescription.IsActive ? "Active" : "Inactive")
+                        </td>
+                        <td>
+                            @(prescription.Patient?.Name ?? "N/A") @* Display the patient's name *@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <div class="mt-3">
+        <a asp-controller="Doctor" asp-action="Dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>

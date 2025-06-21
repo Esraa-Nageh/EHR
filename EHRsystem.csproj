@@ -4,6 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>EHRsystem</RootNamespace>
+
+    <EnableDefaultRazorContentItems>true</EnableDefaultRazorContentItems>
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,5 +20,4 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0" />
   </ItemGroup>
 
-</Project>
-
+  </Project>
