@@ -1,0 +1,27 @@
+@model EHRsystem.Models.User
+
+@{
+    ViewData["Title"] = "Delete User";
+}
+
+<div class="container mt-5" style="max-width: 600px; background-color: #f0f8ff; padding: 30px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+    <h2 class="text-danger mb-4 text-center">Delete User</h2>
+
+    <div class="mb-3">
+        <strong>Name:</strong> @Model.Name
+    </div>
+    <div class="mb-3">
+        <strong>Email:</strong> @Model.Email
+    </div>
+    <div class="mb-3">
+        <strong>Role:</strong> @Model.Role
+    </div>
+
+    <form asp-action="ConfirmDeleteUser" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-danger">Confirm Delete</button>
+            <a asp-action="ManageUsers" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>

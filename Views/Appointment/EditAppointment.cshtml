@@ -1,0 +1,22 @@
+@model EHRsystem.Models.Entities.Appointment
+
+@{
+    ViewData["Title"] = "Edit Appointment";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Edit Appointment</h2>
+
+    <form asp-action="EditAppointment" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group mb-3">
+            <label asp-for="AppointmentDate" class="form-label">New Appointment Date</label>
+            <input asp-for="AppointmentDate" class="form-control" type="datetime-local" />
+            <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a asp-controller="Patient" asp-action="Dashboard" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>

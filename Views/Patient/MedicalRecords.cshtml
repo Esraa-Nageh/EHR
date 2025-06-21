@@ -1,0 +1,48 @@
+@model List<EHRsystem.Models.Entities.MedicalFile>
+
+@{
+    ViewData["Title"] = "My Medical Records";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">My Medical Records</h2>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No medical records found.</p>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th>File Type</th>
+                    <th>Description</th>
+                    <th>Uploaded At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var file in Model)
+                {
+                    <tr>
+                        <td>@file.FileType</td>
+                        <td>@file.Description</td>
+                        <td>@file.UploadedAt.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <a href="@file.FilePath" class="btn btn-sm btn-info" target="_blank">View</a>
+                            <a asp-action="EditMedicalFile" asp-route-id="@file.Id" class="btn btn-sm btn-warning">Edit</a>
+                            @* <a asp-action="DeleteMedicalFile" asp-route-id="@file.Id" class="btn btn-sm btn-danger">Delete</a> *@
+                       <a asp-action="DeleteFile" asp-route-id="@file.Id" class="btn btn-danger btn-sm">
+    Delete
+</a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <a href="/Patient/Dashboard" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>

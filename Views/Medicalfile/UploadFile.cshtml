@@ -1,0 +1,108 @@
+@* @model EHRsystem.Models.Entities.MedicalFile
+@{
+    ViewData["Title"] = "Upload Medical File";
+}
+
+<div class="container mt-5">
+
+    <h2 class="text-center text-primary fw-bold mb-4">Upload Medical File</h2>
+
+
+    <form asp-action="Upload" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="form-label">File Title</label>
+            <input type="text" name="title" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description (optional)</label>
+            <textarea name="description" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Choose File</label>
+            <input type="file" name="file" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+
+    @* 
+    <form asp-action="Upload" enctype="multipart/form-data" method="post">
+        <div class="mb-3">
+            <label class="form-label">File Title</label>
+            <input type="text" name="title" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Choose File</label>
+            <input type="file" name="file" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+    </div> *@
+
+
+
+
+@model EHRsystem.Models.Entities.MedicalFile
+@{
+    ViewData["Title"] = "Upload Medical File";
+    var patients = ViewBag.Patients as List<EHRsystem.Models.Entities.Patient> ?? new();
+}
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary fw-bold mb-4">Upload Medical File</h2>
+
+    <form asp-action="Upload" enctype="multipart/form-data" method="post">
+        @* <div class="mb-3">
+            <label class="form-label">File Title</label>
+            <input type="text" name="title" class="form-control" required />
+        </div> *@
+
+        <div class="mb-3">
+            <label for="title" class="form-label">File Title</label>
+            <select name="title" class="form-select" required>
+                <option value="">-- Select File Title --</option>
+                <option value="Diagnosis Reports">Diagnosis Reports</option>
+                <option value="Prescription Records">Prescription Records</option>
+                <option value="Lab Test Results">Lab Test Results</option>
+                <option value="Imaging & Radiology Files">Imaging & Radiology Files</option>
+                <option value="Discharge Summaries">Discharge Summaries</option>
+                <option value="Doctor Visit Notes / Progress Notes">Doctor Visit Notes / Progress Notes</option>
+                <option value="Surgical Reports">Surgical Reports</option>
+                <option value="Immunization Records">Immunization Records</option>
+                <option value="Allergy and Sensitivity Reports">Allergy and Sensitivity Reports</option>
+                <option value="Chronic Condition Monitoring Records">Chronic Condition Monitoring Records</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description (optional)</label>
+            <textarea name="description" class="form-control"></textarea>
+        </div>
+
+        <!-- 🔽 Patient Selector for Doctor -->
+        @if (Context.Session.GetString("UserRole") == "Doctor")
+        {
+            <div class="mb-3">
+                <label class="form-label">Select Patient</label>
+                <select name="patientId" class="form-select" required>
+                    <option value="">-- Choose Patient --</option>
+                    @foreach (var patient in patients)
+                    {
+                        <option value="@patient.Id">@patient.Name (ID: @patient.Id)</option>
+                    }
+                </select>
+            </div>
+        }
+
+        <div class="mb-3">
+            <label class="form-label">Choose File</label>
+            <input type="file" name="file" class="form-control" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+</div>

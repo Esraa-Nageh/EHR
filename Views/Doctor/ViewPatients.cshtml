@@ -1,0 +1,47 @@
+@model List<EHRsystem.Models.Entities.Patient>
+
+@{
+    ViewData["Title"] = "My Patients";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">My Patients</h2>
+
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-hover shadow-sm border">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Gender</th>
+                    
+                    @* <th>Birth Date</th> *@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var patient in Model)
+                {
+                    if (patient != null)
+                    {
+                        <tr>
+                            <td>@patient.Id</td>
+                            <td>@patient.Name</td>
+                            <td>@patient.Email</td>
+                            <td>@patient.Gender</td>
+                            @* <td>@(patient.BirthDate?.ToShortDateString() ?? "-")</td> *@
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning">No patients found for your records or appointments.</div>
+    }
+</div>

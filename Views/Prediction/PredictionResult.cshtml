@@ -1,0 +1,9 @@
+@{
+    ViewData["Title"] = "Prediction Result";
+}
+
+<h2>Prediction Result</h2>
+<p>Based on your data, your risk for <strong>@ViewBag.Condition</strong> is:</p>
+<p><strong>@ViewBag.Result%</strong></p>
+
+<a href="/Prediction/Predict">Try Again</a>

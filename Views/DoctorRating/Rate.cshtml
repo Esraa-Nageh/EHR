@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Rate Your Doctor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int appointmentId = ViewBag.AppointmentId;
+}
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary">Rate Your Doctor</h2>
+
+    <form asp-action="Rate" method="post" class="mt-4">
+        <input type="hidden" name="appointmentId" value="@appointmentId" />
+
+        <div class="mb-3">
+            <label for="rating" class="form-label fw-bold">Rating (1 to 5)</label>
+            <select name="rating" class="form-control" required>
+                <option value="">Select</option>
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="comment" class="form-label fw-bold">Comment (optional)</label>
+            <textarea name="comment" rows="4" class="form-control" placeholder="Your feedback..."></textarea>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-success px-4">Submit Rating</button>
+        </div>
+    </form>
+</div>

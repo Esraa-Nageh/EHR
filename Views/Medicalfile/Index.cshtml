@@ -1,0 +1,113 @@
+@model List<EHRsystem.Models.Entities.MedicalFile>
+@{
+    ViewData["Title"] = "My Medical Files";
+    string userRole = Context.Session.GetString("UserRole") ?? "";
+}
+@if ((Context.Session.GetString("UserRole") ?? "") == "Doctor")
+{
+    <form asp-action="Index" method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <input type="text" name="patientName" value="@ViewBag.PatientNameFilter" class="form-control"
+                placeholder="Search by patient name..." />
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="patientId" value="@ViewBag.PatientIdFilter" class="form-control"
+                placeholder="Patient ID" />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-outline-primary">Filter</button>
+        </div>
+    </form>
+}
+
+
+<div class="container mt-5">
+    <h2 class="text-primary fw-bold text-center mb-4">Medical Files</h2>
+
+    @if (Model.Count == 0)
+    {
+        <p class="text-center text-danger fw-semibold">No medical files available.</p>
+    }
+    else
+    {
+        <table class="table table-bordered table-striped shadow-sm rounded-4">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    @if (userRole == "Doctor")
+                    {
+                        <th>Patient</th>
+                    }
+                    <th>Uploaded By</th>
+                    <th>Date</th>
+                    @* <th>PDF</th>
+                    <th>Image</th> *@
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var file in Model)
+                {
+                    <tr>
+                        <td>@file.Title</td>
+                        <td>@file.Description</td>
+
+                        @if (userRole == "Doctor")
+                        {
+                            <td>
+                                @{
+                                    var patient = file.Patient;
+                                    string patientName = patient != null ? patient.Name : "N/A";
+                                }
+                                @patientName
+                            </td>
+                        }
+
+                        <td>@file.UploadedByRole</td>
+                        <td>@file.UploadDate.ToShortDateString()</td>
+                        @* <td>
+                            @if (!string.IsNullOrEmpty(file.PdfPath))
+                            {
+                                <a href="@file.PdfPath" target="_blank" class="btn btn-outline-secondary btn-sm">View PDF</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">None</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(file.ImagePath))
+                            {
+                                <a href="@file.ImagePath" target="_blank" class="btn btn-outline-secondary btn-sm">View Image</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">None</span>
+                            }
+                        </td> *@
+                        <td class="d-flex gap-2">
+                            <a asp-action="ViewFile" asp-route-id="@file.Id" class="btn btn-outline-primary btn-sm">
+                                View
+                            </a>
+
+                            @if ((userRole == "Doctor" && file.DoctorId == Context.Session.GetInt32("UserId")))
+                            {
+                                <a asp-action="Delete" asp-route-id="@file.Id" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure you want to delete this file?');">D
+                                    elete</a>
+                            }
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    }
+
+    <div class="text-center mt-4">
+        <a asp-action="Upload" class="btn btn-primary px-4">Upload New File</a>
+    </div>
+</div>

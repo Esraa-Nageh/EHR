@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Health Risk Prediction";
+}
+
+<h2>Predict Diabetes/Hypertension</h2>
+
+<form asp-action="Predict" method="post">
+    <label>Age:</label>
+    <input type="number" name="Age" required />
+
+    <label>BMI:</label>
+    <input type="number" step="0.1" name="BMI" required />
+
+    <label>Blood Pressure:</label>
+    <input type="number" name="BloodPressure" required />
+
+    <button type="submit">Predict</button>
+</form>

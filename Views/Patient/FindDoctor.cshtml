@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "Find the Right Doctor";
+    var doctors = ViewBag.FilteredDoctors as List<EHRsystem.Models.Entities.Doctor> ?? new List<EHRsystem.Models.Entities.Doctor>();
+    var specialties = ViewBag.Specialties as List<string> ?? new List<string>();
+}
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary fw-bold mb-4">Find the Right Doctor</h2>
+
+    <form method="get" asp-action="FindDoctor" class="mb-5 p-4 bg-light shadow-sm rounded-4">
+        <div class="row g-3 align-items-end">
+
+            <div class="col-md-4">
+                <label for="specialty" class="form-label fw-semibold">Specialty</label>
+                <select class="form-select" name="specialty" id="specialty">
+                    <option value="">-- Select Specialty --</option>
+                    @foreach (var s in specialties)
+                    {
+                        <option value="@s">@s</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label for="location" class="form-label fw-semibold">Location</label>
+                <input type="text" class="form-control" name="location" id="location" placeholder="e.g. Cairo, Giza" />
+            </div>
+
+            <div class="col-md-4">
+                <label for="name" class="form-label fw-semibold">Doctor Name</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="e.g. Dr. Ahmed" />
+            </div>
+
+            <div class="col-12 text-center mt-3">
+                <button type="submit" class="btn btn-primary px-5">Search</button>
+            </div>
+        </div>
+    </form>
+
+    @if (doctors.Any())
+    {
+        <h5 class="text-secondary mb-3">Search Results:</h5>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var doctor in doctors)
+            {
+                <div class="col">
+                    <div class="card shadow-sm border-0 rounded-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary fw-bold">@doctor.Name</h5>
+                            <p class="card-text mb-1"><strong>Specialty:</strong> @doctor.Specialization</p>
+                            <p class="card-text mb-2"><strong>Location:</strong> @doctor.Location</p>
+                            <a href="/Appointment/Book?doctorId=@doctor.Id" class="btn btn-outline-success">Book Appointment</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (Context.Request.Query.Count > 0)
+    {
+        <p class="text-danger text-center fw-semibold">No matching doctors found.</p>
+    }
+</div>
+

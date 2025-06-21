@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">Admin Panel</h2>
+        <p class="text-muted">Manage users, doctors, and the entire system from here.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary fw-bold">Manage Doctors</h5>
+                    <p class="card-text text-muted">Add or remove doctors, update details.</p>
+                    <a href="/Admin/ManageDoctors" class="btn btn-outline-primary rounded-3 fw-semibold">Go</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary fw-bold">Manage Patients</h5>
+                    <p class="card-text text-muted">View and organize patient records.</p>
+                    <a href="/Admin/ManagePatients" class="btn btn-outline-success rounded-3 fw-semibold">Go</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0 rounded-4 text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary fw-bold">System Settings</h5>
+                    <p class="card-text text-muted">Control system configuration and roles.</p>
+                    <a href="/Admin/Settings" class="btn btn-outline-dark rounded-3 fw-semibold">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,90 @@
+@model EHRsystem.Models.Entities.Appointment
+
+@{
+    ViewData["Title"] = "Find the Right Doctor";
+    var doctors = ViewBag.Doctors as List<EHRsystem.Models.Entities.Doctor> ?? new List<EHRsystem.Models.Entities.Doctor>();
+    var specialties = ViewBag.Specialties as List<string> ?? new List<string>();
+}
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary fw-bold mb-4">Find the Right Doctor</h2>
+
+    <!-- Filter Form -->
+    <form asp-action="BookAppointment" method="get" class="mb-5 p-4 bg-light shadow-sm rounded-4">
+        <div class="row g-3 align-items-end">
+
+            <div class="col-md-4">
+                <label for="specialty" class="form-label fw-semibold">Specialty</label>
+                <select name="specialty" class="form-select">
+                    <option value="">All Specialties</option>
+                    @foreach (var spec in specialties)
+                    {
+                        <option value="@spec">@spec</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label for="location" class="form-label fw-semibold">Location</label>
+                <input name="location" class="form-control" placeholder="Enter city or area..." />
+            </div>
+
+            <div class="col-md-4">
+                <label for="name" class="form-label fw-semibold">Doctor Name</label>
+                <input name="name" class="form-control" placeholder="Type name..." />
+            </div>
+
+            <div class="col-md-12 text-end mt-3">
+                <button type="submit" class="btn btn-primary me-2">Search</button>
+                <a asp-action="BookAppointment" class="btn btn-secondary">Reset</a>
+            </div>
+        </div>
+    </form>
+
+    @if (!doctors.Any())
+    {
+        <p class="text-center text-danger">No doctors match the current criteria.</p>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var doctor in doctors)
+            {
+                var doctorAppointments = doctor.Appointments?.Where(a => !a.IsBooked).ToList() ?? new
+                List<EHRsystem.Models.Entities.Appointment>();
+
+                <div class="col-md-6 mb-4">
+                    <div class="card border-info shadow-sm rounded-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-info">@doctor.Name</h5>
+                            <p class="card-text">
+                                <strong>Specialty:</strong> @doctor.Specialty<br />
+                                <strong>Location:</strong> @doctor.Location
+                            </p>
+
+                            @if (!doctorAppointments.Any())
+                            {
+                                <p class="text-muted">No available slots.</p>
+                            }
+                            else
+                            {
+                                <ul class="list-group">
+                                    @foreach (var slot in doctorAppointments)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            @slot.AppointmentDate.ToString("f")
+                                            <form asp-action="BookAppointment" method="post" class="ms-3">
+                                                <input type="hidden" name="appointmentId" value="@slot.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success">Book</button>
+                                            </form>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

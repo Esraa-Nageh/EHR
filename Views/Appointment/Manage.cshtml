@@ -1,0 +1,64 @@
+@model List<EHRsystem.Models.Entities.Appointment>
+
+@{
+    ViewData["Title"] = "Manage Appointments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary mb-4">Manage Your Appointment Slots</h2>
+
+    <a asp-action="Create" class="btn btn-primary mb-3">+ Add Appointment Slot</a>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">You have no appointments yet.</p>
+    }
+    else
+    {
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Booked</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appt in Model)
+                {
+                    <tr>
+                        <td>@appt.AppointmentDate.ToString("g")</td>
+                        <td>@appt.Reason</td>
+                        <td>@appt.Status</td>
+                        <td>
+                            @if (appt.IsBooked)
+                            {
+                                <span class="badge bg-danger">Yes</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">No</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!appt.IsBooked)
+                            {
+                                <form asp-action="Delete" method="post" onsubmit="return confirm('Delete this slot?');">
+                                    <input type="hidden" name="id" value="@appt.Id" />
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Locked</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

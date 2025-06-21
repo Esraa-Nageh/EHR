@@ -1,0 +1,27 @@
+@model EHRsystem.Models.Entities.MedicalFile
+
+@{
+    ViewData["Title"] = "Delete Medical File";
+}
+
+<div class="container mt-5">
+    <h2 class="text-danger">Confirm Delete</h2>
+    <p>Are you sure you want to delete the following medical file?</p>
+
+    <dl class="row">
+        <dt class="col-sm-3">File Type</dt>
+        <dd class="col-sm-9">@Model.FileType</dd>
+
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+
+        <dt class="col-sm-3">Uploaded At</dt>
+        <dd class="col-sm-9">@Model.UploadedAt.ToString("yyyy-MM-dd")</dd>
+    </dl>
+
+    <form asp-action="ConfirmDeleteMedicalFile" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a asp-action="MedicalRecords" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

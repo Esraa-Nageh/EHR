@@ -1,0 +1,49 @@
+@model List<EHRsystem.Models.Entities.Appointment>
+@{
+    ViewData["Title"] = "My Appointments";
+}
+
+<h2 class="text-primary fw-bold">My Appointments</h2>
+
+@if (!Model.Any())
+{
+    <p>You have no appointments.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appt in Model)
+            {
+                <tr>
+                    <td>@appt.Doctor?.Name</td>
+                    <td>@appt.AppointmentDate.ToString("g")</td>
+                    <td>@appt.Reason</td>
+                    <td>@appt.Status</td>
+                    <td>
+                        @if (appt.Status != "Cancelled")
+                        {
+                            <form asp-action="CancelAppointment" asp-controller="Patient" method="post" style="display:inline">
+                                <input type="hidden" name="id" value="@appt.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                                <a asp-action="EditAppointment" asp-route-id="@appt.Id" class="btn btn-sm btn-outline-primary me-2">
+                                    Reschedule
+                                </a>
+
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,62 @@
+@model EHRsystem.Models.Entities.MedicalFile
+
+@{
+    ViewData["Title"] = "Upload Medical File";
+    var doctors = ViewBag.Doctors as List<dynamic> ?? new List<dynamic>();
+    int? patientId = ViewBag.PatientId;
+}
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary fw-bold mb-4">Upload a New Medical File</h2>
+
+    <form asp-action="Upload" method="post" class="bg-light p-4 rounded-4 shadow-sm border border-2">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <input type="hidden" asp-for="PatientId" value="@patientId" />
+
+        <!-- Doctor Dropdown -->
+        <div class="form-group mb-3">
+            <label asp-for="DoctorId" class="form-label fw-semibold">Select Doctor</label>
+            <select asp-for="DoctorId" class="form-control" required>
+                <option value="">-- Choose a doctor --</option>
+                @foreach (var d in doctors)
+                {
+                    <option value="@d.Id">@d.Name — @d.Specialization</option>
+                }
+            </select>
+            <span asp-validation-for="DoctorId" class="text-danger"></span>
+        </div>
+
+        <!-- Title -->
+        <div class="form-group mb-3">
+            <label asp-for="Description" class="form-label fw-semibold">Title</label>
+            <input asp-for="Description" class="form-control" placeholder="e.g. MRI Scan Report" required />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group mb-3">
+            <label asp-for="Description" class="form-label fw-semibold">Description</label>
+            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Brief summary or notes..." required></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <!-- File Path -->
+        <div class="form-group mb-4">
+            <label asp-for="FilePath" class="form-label fw-semibold">File Path / Link</label>
+            <input asp-for="FilePath" class="form-control" placeholder="https://example.com/file.pdf" required />
+            <span asp-validation-for="FilePath" class="text-danger"></span>
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4 fw-bold">Upload</button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
