@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EHRsystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7d620a29eef880dad0244787e8faa53929b75db8")]
 [assembly: System.Reflection.AssemblyProductAttribute("EHRsystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EHRsystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
