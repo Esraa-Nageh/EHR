@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using EHRsystem.Data;
 using EHRsystem.Models;
 using EHRsystem.Models.Entities;
 using EHRsystem.ViewModels;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+using System; // Added for DateTime
 
 namespace EHRsystem.Controllers
 {
@@ -52,8 +53,7 @@ namespace EHRsystem.Controllers
                             Email = model.Email,
                             PasswordHash = HashPassword(model.Password),
                             Role = "Doctor",
-                            Specialization = "",
-                            Specialty = "",
+                            Specialty = "", // Corrected: Using 'Specialty'
                             Location = ""
                         };
                         break;
@@ -115,7 +115,6 @@ namespace EHRsystem.Controllers
                     HttpContext.Session.SetString("UserName", user.Name);
                     HttpContext.Session.SetString("UserRole", user.Role);
                     HttpContext.Session.SetString("UserEmail", user.Email);
-                    // HttpContext.Session.SetString("UserId", user.Id.ToString());
 
                     return user.Role switch
                     {
@@ -131,36 +130,6 @@ namespace EHRsystem.Controllers
 
             return View(model);
         }
-
-
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public IActionResult Login(LoginViewModel model)
-        // {
-        //     if (ModelState.IsValid)
-        //     {
-        //         var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
-        //         if (user != null && VerifyPassword(model.Password, user.PasswordHash))
-        //         {
-        //             HttpContext.Session.SetInt32("UserId", user.Id);
-        //             HttpContext.Session.SetString("UserName", user.Name);
-        //             HttpContext.Session.SetString("UserRole", user.Role);
-        //             HttpContext.Session.SetString("UserEmail", user.Email); // ✅ Needed for DoctorController
-
-        //             return user.Role switch
-        //             {
-        //                 "Doctor" => RedirectToAction("Dashboard", "Doctor"),
-        //                 "Patient" => RedirectToAction("Dashboard", "Patient"),
-        //                 "Admin" => RedirectToAction("ManageUsers", "Admin"),
-        //                 _ => RedirectToAction("Index", "Home")
-        //             };
-        //         }
-
-        //         ModelState.AddModelError("", "Invalid email or password.");
-        //     }
-
-        //     return View(model);
-        // }
 
         // ===== Logout =====
         public IActionResult Logout()

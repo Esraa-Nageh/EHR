@@ -6,6 +6,7 @@ using System.Text;
 using EHRsystem.Data;
 using EHRsystem.Models;
 using EHRsystem.Models.Entities;
+using System; // Added for DateTime
 
 namespace EHRsystem.Controllers
 {
@@ -71,8 +72,7 @@ namespace EHRsystem.Controllers
                         Email = Email,
                         PasswordHash = HashPassword(Password),
                         Role = "Doctor",
-                        Specialization = "",
-                        Specialty = "",
+                        Specialty = "", // Corrected: Using 'Specialty'
                         Location = ""
                     };
                     break;
@@ -137,6 +137,21 @@ namespace EHRsystem.Controllers
             user.Email = updatedUser.Email;
             user.Role = updatedUser.Role;
 
+            // Handle specific properties for Doctor if the user is a Doctor
+            if (user is Doctor doctor && updatedUser is Doctor updatedDoctor)
+            {
+                doctor.Specialty = updatedDoctor.Specialty; // Corrected: Use Specialty
+                doctor.Location = updatedDoctor.Location;
+            }
+            // Handle specific properties for Patient if the user is a Patient
+            else if (user is Patient patient && updatedUser is Patient updatedPatient)
+            {
+                patient.NationalId = updatedPatient.NationalId;
+                patient.Gender = updatedPatient.Gender;
+                patient.BirthDate = updatedPatient.BirthDate;
+            }
+
+
             if (!string.IsNullOrWhiteSpace(newPassword))
             {
                 user.PasswordHash = HashPassword(newPassword);
@@ -185,4 +200,7 @@ namespace EHRsystem.Controllers
     }
 
     // Optional: Admin class implementation
+    // No explicit AdminUser class definition is strictly needed if it just inherits User without new properties
+    // but kept here for consistency with AccountController if you have one.
+    // public class AdminUser : User { }
 }

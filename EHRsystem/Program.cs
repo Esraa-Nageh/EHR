@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using EHRsystem.Data;
 using EHRsystem.Models.Entities;
+using System; // Make sure this is included for DateTime and Version
 
 namespace EHRsystem
 {
@@ -28,16 +29,18 @@ namespace EHRsystem
             {
                 var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+                // Ensure the database is created and migrations are applied
+                db.Database.Migrate();
+
                 if (!db.Doctors.Any())
                 {
                     var doctor = new Doctor
                     {
                         Name = "Dr. Sarah",
                         Email = "doctor@example.com",
-                        PasswordHash = "123",
+                        PasswordHash = "123", // Consider hashing this properly for production
                         Role = "Doctor",
-                        Specialization = "Cardiology",
-                        Specialty = "Heart",
+                        Specialty = "Cardiology", // Corrected: Using 'Specialty'
                         Location = "Cairo"
                     };
 
@@ -57,7 +60,7 @@ namespace EHRsystem
             app.UseStaticFiles();
             app.UseRouting();
 
-            app.UseSession();       // ✅ Enables HttpContext.Session
+            app.UseSession();      // ✅ Enables HttpContext.Session
             app.UseAuthorization();
 
             app.MapControllerRoute(

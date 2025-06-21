@@ -23,14 +23,15 @@
             <span asp-validation-for="Email" class="text-danger small"></span>
         </div>
 
-        <div class="mb-3">
+        @* Removed the problematic Specialization field *@
+        @* <div class="mb-3">
             <label asp-for="Specialization" class="form-label">Specialization</label>
             <input asp-for="Specialization" class="form-control" />
-        </div>
+        </div> *@
 
         <div class="mb-3">
-            <label asp-for="Specialty" class="form-label">Specialty</label>
-            <input asp-for="Specialty" class="form-control" />
+            <label asp-for="Specialty" class="form-label">Specialty</label> @* FIXED: Changed asp-for and label to "Specialty" *@
+            <input asp-for="Specialty" class="form-control" /> @* FIXED: Changed asp-for to "Specialty" *@
         </div>
 
         <div class="mb-3">

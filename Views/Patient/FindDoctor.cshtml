@@ -47,7 +47,7 @@
                     <div class="card shadow-sm border-0 rounded-4">
                         <div class="card-body">
                             <h5 class="card-title text-primary fw-bold">@doctor.Name</h5>
-                            <p class="card-text mb-1"><strong>Specialty:</strong> @doctor.Specialization</p>
+                            <p class="card-text mb-1"><strong>Specialty:</strong> @doctor.Specialty</p> @* FIXED: Changed @doctor.Specialization to @doctor.Specialty *@
                             <p class="card-text mb-2"><strong>Location:</strong> @doctor.Location</p>
                             <a href="/Appointment/Book?doctorId=@doctor.Id" class="btn btn-outline-success">Book Appointment</a>
                         </div>
@@ -61,4 +61,3 @@
         <p class="text-danger text-center fw-semibold">No matching doctors found.</p>
     }
 </div>
-

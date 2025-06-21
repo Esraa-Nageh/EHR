@@ -10,6 +10,7 @@ using EHRsystem.Models;
 using EHRsystem.Models.Entities;
 using System;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic; // Added for List<MedicalFile> type hint if needed
 
 namespace EHRsystem.Controllers
 {
@@ -65,20 +66,21 @@ namespace EHRsystem.Controllers
             .Select(a =>
             {
                 var doctor = _context.Doctors.FirstOrDefault(d => d.Id == a.DoctorId);
-                return new
+                return new // Fixed: Changed from 'new Doctor' to anonymous object to avoid CS9035
                 {
                     Id = a.Id, // ✅ This fixes the runtime error
                     a.AppointmentDate,
                     DoctorName = doctor?.Name ?? "Doctor",
-                    Specialization = doctor?.Specialization ?? "General"
+                    Specialty = doctor?.Specialty ?? "General" // <-- FIX APPLIED HERE: Changed 'Specialization' to 'Specialty'
                 };
             }).ToList();
+            
             //patient reminder 
             var reminders = _context.Appointments
                 .Where(a => a.IsBooked &&
-                            a.PatientId == patientId &&
-                            a.AppointmentDate >= DateTime.Now &&
-                            a.AppointmentDate <= DateTime.Now.AddHours(24))
+                             a.PatientId == patientId &&
+                             a.AppointmentDate >= DateTime.Now &&
+                             a.AppointmentDate <= DateTime.Now.AddHours(24))
                 .Include(a => a.Doctor)
                 .ToList();
 
@@ -125,12 +127,12 @@ namespace EHRsystem.Controllers
                 doctors = doctors.Where(d => d.Name.Contains(name));
 
             var result = doctors
-                .Select(d => new Doctor
+                .Select(d => new // Fixed: Changed from 'new Doctor' to anonymous object to avoid CS9035
                 {
-                    Id = d.Id,
-                    Name = d.Name,
-                    Specialty = d.Specialty,
-                    Location = d.Location,
+                    d.Id,
+                    d.Name,
+                    d.Specialty,
+                    d.Location,
                     Appointments = _context.Appointments
                         .Where(a => a.DoctorId == d.Id && !a.IsBooked)
                         .OrderBy(a => a.AppointmentDate)
@@ -152,26 +154,6 @@ namespace EHRsystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // public IActionResult BookAppointment(int appointmentId)
-        // {
-        //     if (HttpContext.Session.GetString("UserRole") != "Patient")
-        //         return Unauthorized();
-
-        //     var appointment = _context.Appointments.FirstOrDefault(a => a.Id == appointmentId && !a.IsBooked);
-        //     if (appointment == null)
-        //     {
-        //         TempData["Error"] = "This appointment is no longer available.";
-        //         return RedirectToAction("BookAppointment");
-        //     }
-
-        //     appointment.PatientId = HttpContext.Session.GetInt32("UserId") ?? 0;
-        //     appointment.Status = "Confirmed";
-        //     appointment.IsBooked = true;
-
-        //     _context.SaveChanges();
-        //     return RedirectToAction("Dashboard");
-        // }
-
         public IActionResult BookAppointment(int appointmentId)
         {
             if (HttpContext.Session.GetString("UserRole") != "Patient")
@@ -222,6 +204,7 @@ namespace EHRsystem.Controllers
 
             user.Name = updatedUser.Name;
             user.Email = updatedUser.Email;
+            user.Role = updatedUser.Role; // Ensure Role is also updated if it's part of the form, or set explicitly.
 
             if (!string.IsNullOrEmpty(NewPassword))
                 user.PasswordHash = HashPassword(NewPassword);
@@ -274,6 +257,7 @@ namespace EHRsystem.Controllers
 
             file.FileType = updated.FileType;
             file.Description = updated.Description;
+            file.Title = updated.Title; // Ensure Title is updated too if it's in the form
 
             _context.SaveChanges();
             return RedirectToAction("MedicalRecords");
@@ -320,7 +304,7 @@ namespace EHRsystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UploadMedicalFile(IFormFile file, string FileType, string Description)
+        public async Task<IActionResult> UploadMedicalFile(IFormFile file, string Title, string FileType, string Description) // Added 'Title' parameter
         {
             if (HttpContext.Session.GetString("UserRole") != "Patient")
                 return Unauthorized();
@@ -345,12 +329,15 @@ namespace EHRsystem.Controllers
 
             var medicalFile = new MedicalFile
             {
+                Title = Title, // Fixed: Setting the required 'Title'
                 PatientId = HttpContext.Session.GetInt32("UserId") ?? 0,
-                DoctorId = 0,
+                DoctorId = null, // Set to null since patient is uploading, not a doctor in this context
                 FileType = FileType,
                 Description = Description,
                 FilePath = "/uploads/" + fileName,
-                UploadedAt = DateTime.Now
+                UploadedAt = DateTime.Now,
+                UploadDate = DateTime.Now, // Ensure UploadDate is set
+                UploadedByRole = HttpContext.Session.GetString("UserRole") ?? "Patient" // Ensure this is set
             };
 
             _context.MedicalFiles.Add(medicalFile);
@@ -400,7 +387,6 @@ namespace EHRsystem.Controllers
         }
 
         // === GET: Show form to reschedule ===
-        [HttpGet]
         [HttpGet]
         public IActionResult EditAppointment(int id)
         {
@@ -467,7 +453,5 @@ namespace EHRsystem.Controllers
 
             return new List<Appointment>();
         }
-
-
     }
 }

@@ -16,13 +16,13 @@
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\EHRsystem.9ywqk34kug.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"9ywqk34kug"},{"Name":"integrity","Value":"sha256-UenqgLpkFiI1UwEB3WJL73KTznOeB7YeIK/jjgI17Ns="},{"Name":"label","Value":"_content/EHRsystem/EHRsystem.bundle.scp.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1127"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022UenqgLpkFiI1UwEB3WJL73KTznOeB7YeIK/jjgI17Ns=\u0022"},{"Name":"Last-Modified","Value":"Sat, 21 Jun 2025 17:37:19 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1127"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022UenqgLpkFiI1UwEB3WJL73KTznOeB7YeIK/jjgI17Ns=\u0022"},{"Name":"Last-Modified","Value":"Sat, 21 Jun 2025 19:29:10 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/EHRsystem/EHRsystem.bundle.scp.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\EHRsystem.9ywqk34kug.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-UenqgLpkFiI1UwEB3WJL73KTznOeB7YeIK/jjgI17Ns="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"1127"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022UenqgLpkFiI1UwEB3WJL73KTznOeB7YeIK/jjgI17Ns=\u0022"},{"Name":"Last-Modified","Value":"Sat, 21 Jun 2025 17:37:19 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"1127"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022UenqgLpkFiI1UwEB3WJL73KTznOeB7YeIK/jjgI17Ns=\u0022"},{"Name":"Last-Modified","Value":"Sat, 21 Jun 2025 19:29:10 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/EHRsystem/favicon.61n19gt1b8.ico">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\favicon.ico'))</AssetFile>

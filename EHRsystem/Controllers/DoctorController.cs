@@ -6,6 +6,8 @@ using System.Text;
 using EHRsystem.Data;
 using EHRsystem.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System; // Added for DateTime
+using System.Collections.Generic; // For List<Appointment>
 
 namespace EHRsystem.Controllers
 {
@@ -22,77 +24,6 @@ namespace EHRsystem.Controllers
         {
             return HttpContext.Session.GetString("UserRole") == "Doctor";
         }
-
-        /*public IActionResult Dashboard()
-        {
-            if (!IsDoctor()) return Unauthorized();
-
-            int doctorId = HttpContext.Session.GetInt32("UserId") ?? 0;
-            var doctor = _context.Doctors.FirstOrDefault(d => d.Id == doctorId);
-            if (doctor == null) return NotFound("Doctor profile not found.");
-
-            // Dashboard data
-            ViewBag.DoctorName = doctor.Name;
-            ViewBag.TodayAppointmentsCount = _context.Appointments
-                .Where(a => a.DoctorId == doctorId && a.AppointmentDate.Date == DateTime.Today)
-                .Count();
-
-            ViewBag.MyPatientsCount = _context.Appointments
-                .Where(a => a.DoctorId == doctorId)
-                .Select(a => a.PatientId)
-                .Distinct()
-                .Count();
-
-            ViewBag.RecordsCount = _context.MedicalFiles
-                .Where(f => f.DoctorId == doctorId)
-                .Count();
-
-            return View();
-        }*/
-
-
-        // public IActionResult Dashboard()
-        // {
-        //     if (!IsDoctor()) return Unauthorized();
-
-        //     int doctorId = HttpContext.Session.GetInt32("UserId") ?? 0;
-        //     var doctor = _context.Doctors.FirstOrDefault(d => d.Id == doctorId);
-        //     if (doctor == null) return NotFound("Doctor profile not found.");
-
-        //     // === Dashboard Data ===
-        //     ViewBag.DoctorName = doctor.Name;
-
-        //     ViewBag.TodayAppointmentsCount = _context.Appointments
-        //         .Where(a => a.DoctorId == doctorId && a.AppointmentDate.Date == DateTime.Today)
-        //         .Count();
-
-        //     ViewBag.MyPatientsCount = _context.Appointments
-        //         .Where(a => a.DoctorId == doctorId)
-        //         .Select(a => a.PatientId)
-        //         .Distinct()
-        //         .Count();
-
-        //     // Doctor's own uploaded records
-        //     ViewBag.RecordsCount = _context.MedicalFiles
-        //         .Where(f => f.DoctorId == doctorId)
-        //         .Count();
-
-        //     // ✅ New: All medical file count (for dashboard badge)
-        //     ViewBag.MedicalFileCount = _context.MedicalFiles.Count();
-        //     //doctor reminder 
-        //     var doctorReminders = _context.Appointments
-        //         .Where(a => a.IsBooked &&
-        //                     a.DoctorId == doctorId &&
-        //                     a.AppointmentDate >= DateTime.Now &&
-        //                     a.AppointmentDate <= DateTime.Now.AddHours(24))
-        //         .Include(a => a.Patient)
-        //         .ToList();
-
-        //     ViewBag.Reminders = doctorReminders;
-
-        //     return View();
-        // }
-
 
         public IActionResult Dashboard()
         {
@@ -138,14 +69,13 @@ namespace EHRsystem.Controllers
                 ViewBag.ReminderMessage = $"⏰ Reminder: You have an appointment with {patientName} on {upcomingSoon.AppointmentDate:f}";
             }
 
-            // ✅ New: Average Rating
-           // var ratings = _context.Appointments
-                //.Where(a => a.DoctorId == doctorId && a.Rating > 0)
-                //.Select(a => a.Rating)
-                //.ToList();
+            // ✅ New: Average Rating (uncomment if you have a Rating property in Appointment and are populating it)
+            // var ratings = _context.Appointments
+            //     .Where(a => a.DoctorId == doctorId && a.Rating > 0)
+            //     .Select(a => a.Rating)
+            //     .ToList();
+            // ViewBag.AverageRating = ratings.Any() ? ratings.Average() : 0;
 
-
-           // ViewBag.AverageRating = ratings.Any() ? ratings.Average() : 0;
             return View();
         }
 
@@ -175,8 +105,8 @@ namespace EHRsystem.Controllers
 
             doctor.Name = updated.Name;
             doctor.Email = updated.Email;
-            doctor.Specialization = updated.Specialization;
-            doctor.Specialty = updated.Specialty;
+            // REMOVED: doctor.Specialization = updated.Specialization; // This line was causing an error
+            doctor.Specialty = updated.Specialty; // Corrected: Using 'Specialty'
             doctor.Location = updated.Location;
 
             if (!string.IsNullOrWhiteSpace(newPassword))
@@ -196,9 +126,7 @@ namespace EHRsystem.Controllers
             return Convert.ToBase64String(hash);
         }
 
-
-        // add reminder fn for appointment 
-
+        // add reminder fn for appointment
         public List<Appointment> GetUpcomingRemindersForUser(int userId, string role)
         {
             DateTime now = DateTime.Now;
@@ -227,6 +155,7 @@ namespace EHRsystem.Controllers
 
             return new List<Appointment>();
         }
+
         //view patient for doctors
         public IActionResult ViewPatients()
         {
@@ -251,7 +180,5 @@ namespace EHRsystem.Controllers
 
             return View(allPatients);
         }
-
-
     }
 }

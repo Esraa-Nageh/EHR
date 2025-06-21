@@ -9,7 +9,7 @@ namespace EHRsystem.Models.Entities
         public int Id { get; set; }
 
         [Required]
-        public string Title { get; set; }
+        public required string Title { get; set; } // <<-- CHANGED THIS LINE
 
         public string? Description { get; set; }
 

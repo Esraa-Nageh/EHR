@@ -22,6 +22,6 @@ namespace EHRsystem.Models.Entities
 
         // Navigation
         [ForeignKey("AppointmentId")]
-        public Appointment Appointment { get; set; }
+        public Appointment? Appointment { get; set; } // Fixed: Made nullable
     }
 }

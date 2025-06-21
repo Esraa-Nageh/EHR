@@ -3,6 +3,7 @@ using System;
 using EHRsystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EHRsystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250621185923_RemoveSpecializationAndAddRemainingDoctorPatientFields")]
+    partial class RemoveSpecializationAndAddRemainingDoctorPatientFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,6 +236,10 @@ namespace EHRsystem.Migrations
                     b.HasBaseType("EHRsystem.Models.User");
 
                     b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Specialization")
                         .IsRequired()
                         .HasColumnType("longtext");
 
